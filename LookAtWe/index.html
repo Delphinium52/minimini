@@ -35,201 +35,7 @@
     let users = await getDocs(collection(db, "User"));
 
 
-    // [CREATE] 팝업 - 등록하기 버튼
-    $("#saveBtn").click(async function () {
-        let profile_img_url = $("#profile_img_url").val();
-        let name = $("#name").val();
-        let goal = $("#goal").val();
-        let description = $("#description").val();
 
-        if (profile_img_url === '' || name === '' || goal === '' || description === '') { //데이터 입력 확인
-            alert("정보를 모두 입력해주세요.")
-        } else {
-            let doc = {
-                'profile_img_url': profile_img_url,
-                'goal': goal,
-                'name': name,
-                'description': description
-            }
-            await addDoc(collection(db, "User"), doc);
-            alert('저장 완료!');
-            window.location.reload();
-        }
-    });
-
-
-
-    // [DELETE] 팝업 - 삭제하기 버튼
-    $("#deleteBtn").click(async function () {
-        let userId = $(this).attr("data-id");
-        console.log(userId)
-        await deleteDoc(doc(db, "User", userId));
-        window.location.reload();
-    });
-
-
-
-    // [UPDATE] 팝업 - 업데이트하기 버튼
-    $("#updateBtn").click(async function () {
-        let userId = $(this).attr("data-id");
-
-        let profile_img_url = $("#update_profile_img_url").val();;
-        let goal = $("#update_goal").val();
-        let name = $("#update_name").val();
-        let description = $("#updateDescription").val();
-
-        let dataToUpdate = {
-            'profile_img_url': profile_img_url,
-            'goal': goal,
-            'name': name,
-            'description': description
-        };
-
-        await updateDoc(doc(db, "User", userId), dataToUpdate);
-        alert('수정 완료!');
-        window.location.reload();
-    });
-
-
-
-    // [TEMPLATE]
-    users.forEach((user) => {
-        let row = user.data();
-
-        let temp_profile_info_html = `
-                <div class="profile-info">
-                    <div class="delete-btn" data-id="${user.id}"></div>
-                    <div class="update-btn" data-id="${user.id}"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path style="fill : #c6c6c6" d="M362.7 19.3L314.3 67.7 444.3 197.7l48.4-48.4c25-25 25-65.5 0-90.5L453.3 19.3c-25-25-65.5-25-90.5 0zm-71 71L58.6 323.5c-10.4 10.4-18 23.3-22.2 37.4L1 481.2C-1.5 489.7 .8 498.8 7 505s15.3 8.5 23.7 6.1l120.3-35.4c14.1-4.2 27-11.8 37.4-22.2L421.7 220.3 291.7 90.3z"/></svg></div>
-                    <div class="profile-image">
-                        <img src="${row["profile_img_url"]}" alt="원형 이미지">
-                    </div>
-                    <p class="p-goal">${row["goal"]}</p>
-                    <p class="p-name">${row["name"]}</p>
-                </div>
-            `;
-        $("#profileList").append(temp_profile_info_html);
-
-
-        let temp_profile_detail_area_html = `
-                <div class="profile-detail-area" data-id="${user.id}">
-                    <div class="inner">
-                        <div class="profile-detail-wrap">
-                            <div class="profile-detail-info">
-                                <div class="profile-image">
-                                    <img src="${row["profile_img_url"]}" alt="원형 이미지">
-                                </div>
-                                <div class="text-wrap">
-                                    <p class="p-d-is">나의 꿈은</p>
-                                    <div class="p-d-goal-name-wrap">
-                                        <span class="p-d-goal">${row["goal"]}</span>
-                                        <span class="p-d-name">${row["name"]}</span>
-                                    </div>
-                                    <span class="p-d-description">${row["description"]}</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            `;
-        $("#profileDetailInfoList").append(temp_profile_detail_area_html)
-    });
-
-
-    // 등록팝업 띄우기 버튼
-    $(".share-btn").click(function () {
-        $(".share-popup").show();
-        $(".disabled-cover").show();
-        $(".disabled-cover").animate({
-            opacity: 0.8
-        }, 500); // 500ms(1초) 동안 투명도를 0.2로 변경
-    });
-
-    // 수정팝업 띄우기 버튼
-    $(".update-btn").click(function () {
-        let userId = $(this).attr("data-id");
-        let imgURL = $(".profile-detail-area[data-id='" + userId + "']").find("img").attr("src");
-        let goalValue = $(".profile-detail-area[data-id='" + userId + "']").find(".p-d-goal").text();
-        let nameValue = $(".profile-detail-area[data-id='" + userId + "']").find(".p-d-name").text();
-        let descriptionValue = $(".profile-detail-area[data-id='" + userId + "']").find(".p-d-description").text();
-
-        $("#update_profile_img_url").val(imgURL);
-        $("#update_goal").val(goalValue);
-        $("#update_name").val(nameValue);
-        $("#updateDescription").val(descriptionValue);
-
-
-        $(".update-popup").show();
-        $(".disabled-cover").show();
-        $(".disabled-cover").animate({
-            opacity: 0.8
-        }, 500); // 500ms(1초) 동안 투명도를 0.2로 변경 
-        $("#updateBtn").attr("data-id", userId)
-    });
-
-    // 삭제팝업 띄우기 버튼
-    $(".delete-btn").click(function () {
-        $(".delete-popup").show();
-        $(".disabled-cover").show();
-        $(".disabled-cover").animate({
-            opacity: 0.8
-        }, 500); // 500ms(1초) 동안 투명도를 0.2로 변경
-        let userId = $(this).attr("data-id");
-        $("#deleteBtn").attr("data-id", userId)
-    });
-
-
-    // 등록,삭제팝업 - 취소버튼
-    $(".cancel-btn").click(function () {
-        console.log("hh")
-        $(".delete-popup").hide();
-        $(".popup").hide();
-        $(".disabled-cover").animate({
-            opacity: 0.0
-        }, 500); // 500ms(1초) 동안 투명도를 0.2로 변경
-        $(".disabled-cover").hide();
-        $('.form-control, #description').val(''); //취소 클릭시 인풋 초기화
-    });
-
-
-    //input에 value 값이 존재 하지 않을 경우 saveBtn disabled 처리
-    $('.form-control, #description').on('input', function () {
-        // 모든 입력 필드를 검사하여 값이 있는지 확인
-        var allFilled = true;
-        $('.form-control, #description').each(function () {
-            if ($(this).val() === '') {
-                allFilled = false;
-                return false;
-            }
-        });
-
-        // 모든 인풋이 채워져 있으면 saveBtn의 배경색 변경
-        if (allFilled) {
-            $('#saveBtn').css('background-color', '#FFECB7');
-            $('#saveBtn').css('color', '#000000');
-        } else {
-            $('#saveBtn').css('background-color', '');
-        }
-    });
-
-    //input에 value 값이 존재 하지 않을 경우 saveBtn disabled 처리
-    $('.form-control-update, #updateDescription').on('input', function () {
-        // 모든 입력 필드를 검사하여 값이 있는지 확인
-        var allFilled = true;
-        $('.form-control-update, #updateDescription').each(function () {
-            if ($(this).val() === '') {
-                allFilled = false;
-                return false;
-            }
-        });
-
-        // 모든 인풋이 채워져 있으면 saveBtn의 배경색 변경
-        if (allFilled) {
-            $('#updateBtn').css('background-color', '#FFECB7');
-            $('#updateBtn').css('color', '#000000');
-        } else {
-            $('#updateBtn').css('background-color', '');
-        }
-    });
 
     // tmi 등록
     $("#tbtn").click(async function () {
@@ -402,7 +208,7 @@
         top: 0;
         left: 0;
         right: 0;
-        padding: 10px 60px;
+        padding: 20px 60px 10px;
         background-color: white;
         color: #191919;
         font-family: "BMJUA";
@@ -436,7 +242,7 @@
         margin-bottom: auto;
         padding: 0px;
         font-size: 30px;
-
+        color: gray;
 
     }
 
@@ -520,6 +326,7 @@
         margin: 5%;
         text-align: center;
     }
+    
 </style>
 
 <body>
@@ -534,7 +341,7 @@
             </ul>
         </nav>
         <div class="bar-bg">
-            <span class="bar-ing" style="width: 79%;"></span>
+            <span class="bar-ing" style="width: 100%;"></span>
         </div>
     </header>
 
@@ -576,10 +383,11 @@
             <div class="card" style="width: 18rem;">
                 <img src="KakaoTalk_20240415_094551344.jpg" class="card-img-top" alt="...">
                 <div class="card-body">
-                    <h5 class="card-title">Card title</h5>
-                    <p class="card-text">Some quick example text to build on the card title and make up the bulk of the
-                        card's content.</p>
-                    <a href="#" class="btn btn-primary">Go somewhere</a>
+                    <h5 class="card-title">박준영</h5>
+                    <p class="card-text">언제나 개발을 즐겁게 해야한다. 생각하고 있습니다. 처음엔 되지 않아도
+                        포기하지 않고 계속 하다보면 해결 할 수 있습니다.
+                    </p>
+                    <a href="#" class="btn btn-primary">자세히 보기</a>
                 </div>
             </div>
         </div>
