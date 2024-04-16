@@ -1,0 +1,728 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://getbootstrap.com/docs/5.3/assets/css/docs.css" rel="stylesheet">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <title>꿈러리</title>
+</head>
+
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
+    import { getFirestore, collection, addDoc, getDocs, doc, deleteDoc, updateDoc } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
+
+    //크리에이트 = addDoc
+    //리드 = getDocs
+    //업데이트 = updateDoc
+    //딜리트 = deleteDoc
+
+    const firebaseConfig = {
+        apiKey: "AIzaSyBJjynWr0LoVFbJgOm5MVz2q5XfCozCAsE",
+        authDomain: "spartatest-f638d.firebaseapp.com",
+        projectId: "spartatest-f638d",
+        storageBucket: "spartatest-f638d.appspot.com",
+        messagingSenderId: "576318895369",
+        appId: "1:576318895369:web:3941a32b6190cc84dc8fd8",
+        measurementId: "G-B3H2JY72M1"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    let users = await getDocs(collection(db, "User"));
+
+
+    // [CREATE] 팝업 - 등록하기 버튼
+    $("#saveBtn").click(async function () {
+        let profile_img_url = $("#profile_img_url").val();
+        let name = $("#name").val();
+        let goal = $("#goal").val();
+        let description = $("#description").val();
+
+        if (profile_img_url === '' || name === '' || goal === '' || description === '') { //데이터 입력 확인
+            alert("정보를 모두 입력해주세요.")
+        } else {
+            let doc = {
+                'profile_img_url': profile_img_url,
+                'goal': goal,
+                'name': name,
+                'description': description
+            }
+            await addDoc(collection(db, "User"), doc);
+            alert('저장 완료!');
+            window.location.reload();
+        }
+    });
+
+
+
+    // [DELETE] 팝업 - 삭제하기 버튼
+    $("#deleteBtn").click(async function () {
+        let userId = $(this).attr("data-id");
+        console.log(userId)
+        await deleteDoc(doc(db, "User", userId));
+        window.location.reload();
+    });
+
+
+
+    // [UPDATE] 팝업 - 업데이트하기 버튼
+    $("#updateBtn").click(async function () {
+        let userId = $(this).attr("data-id");
+
+        let profile_img_url = $("#update_profile_img_url").val();;
+        let goal = $("#update_goal").val();
+        let name = $("#update_name").val();
+        let description = $("#updateDescription").val();
+
+        let dataToUpdate = {
+            'profile_img_url': profile_img_url,
+            'goal': goal,
+            'name': name,
+            'description': description
+        };
+
+        await updateDoc(doc(db, "User", userId), dataToUpdate);
+        alert('수정 완료!');
+        window.location.reload();
+    });
+
+
+
+    // [TEMPLATE]
+    users.forEach((user) => {
+        let row = user.data();
+
+        let temp_profile_info_html = `
+                <div class="profile-info">
+                    <div class="delete-btn" data-id="${user.id}"></div>
+                    <div class="update-btn" data-id="${user.id}"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path style="fill : #c6c6c6" d="M362.7 19.3L314.3 67.7 444.3 197.7l48.4-48.4c25-25 25-65.5 0-90.5L453.3 19.3c-25-25-65.5-25-90.5 0zm-71 71L58.6 323.5c-10.4 10.4-18 23.3-22.2 37.4L1 481.2C-1.5 489.7 .8 498.8 7 505s15.3 8.5 23.7 6.1l120.3-35.4c14.1-4.2 27-11.8 37.4-22.2L421.7 220.3 291.7 90.3z"/></svg></div>
+                    <div class="profile-image">
+                        <img src="${row["profile_img_url"]}" alt="원형 이미지">
+                    </div>
+                    <p class="p-goal">${row["goal"]}</p>
+                    <p class="p-name">${row["name"]}</p>
+                </div>
+            `;
+        $("#profileList").append(temp_profile_info_html);
+
+
+        let temp_profile_detail_area_html = `
+                <div class="profile-detail-area" data-id="${user.id}">
+                    <div class="inner">
+                        <div class="profile-detail-wrap">
+                            <div class="profile-detail-info">
+                                <div class="profile-image">
+                                    <img src="${row["profile_img_url"]}" alt="원형 이미지">
+                                </div>
+                                <div class="text-wrap">
+                                    <p class="p-d-is">나의 꿈은</p>
+                                    <div class="p-d-goal-name-wrap">
+                                        <span class="p-d-goal">${row["goal"]}</span>
+                                        <span class="p-d-name">${row["name"]}</span>
+                                    </div>
+                                    <span class="p-d-description">${row["description"]}</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        $("#profileDetailInfoList").append(temp_profile_detail_area_html)
+    });
+
+
+    // 등록팝업 띄우기 버튼
+    $(".share-btn").click(function () {
+        $(".share-popup").show();
+        $(".disabled-cover").show();
+        $(".disabled-cover").animate({
+            opacity: 0.8
+        }, 500); // 500ms(1초) 동안 투명도를 0.2로 변경
+    });
+
+    // 수정팝업 띄우기 버튼
+    $(".update-btn").click(function () {
+        let userId = $(this).attr("data-id");
+        let imgURL = $(".profile-detail-area[data-id='" + userId + "']").find("img").attr("src");
+        let goalValue = $(".profile-detail-area[data-id='" + userId + "']").find(".p-d-goal").text();
+        let nameValue = $(".profile-detail-area[data-id='" + userId + "']").find(".p-d-name").text();
+        let descriptionValue = $(".profile-detail-area[data-id='" + userId + "']").find(".p-d-description").text();
+
+        $("#update_profile_img_url").val(imgURL);
+        $("#update_goal").val(goalValue);
+        $("#update_name").val(nameValue);
+        $("#updateDescription").val(descriptionValue);
+
+
+        $(".update-popup").show();
+        $(".disabled-cover").show();
+        $(".disabled-cover").animate({
+            opacity: 0.8
+        }, 500); // 500ms(1초) 동안 투명도를 0.2로 변경 
+        $("#updateBtn").attr("data-id", userId)
+    });
+
+    // 삭제팝업 띄우기 버튼
+    $(".delete-btn").click(function () {
+        $(".delete-popup").show();
+        $(".disabled-cover").show();
+        $(".disabled-cover").animate({
+            opacity: 0.8
+        }, 500); // 500ms(1초) 동안 투명도를 0.2로 변경
+        let userId = $(this).attr("data-id");
+        $("#deleteBtn").attr("data-id", userId)
+    });
+
+
+    // 등록,삭제팝업 - 취소버튼
+    $(".cancel-btn").click(function () {
+        console.log("hh")
+        $(".delete-popup").hide();
+        $(".popup").hide();
+        $(".disabled-cover").animate({
+            opacity: 0.0
+        }, 500); // 500ms(1초) 동안 투명도를 0.2로 변경
+        $(".disabled-cover").hide();
+        $('.form-control, #description').val(''); //취소 클릭시 인풋 초기화
+    });
+
+
+    //input에 value 값이 존재 하지 않을 경우 saveBtn disabled 처리
+    $('.form-control, #description').on('input', function () {
+        // 모든 입력 필드를 검사하여 값이 있는지 확인
+        var allFilled = true;
+        $('.form-control, #description').each(function () {
+            if ($(this).val() === '') {
+                allFilled = false;
+                return false;
+            }
+        });
+
+        // 모든 인풋이 채워져 있으면 saveBtn의 배경색 변경
+        if (allFilled) {
+            $('#saveBtn').css('background-color', '#FFECB7');
+            $('#saveBtn').css('color', '#000000');
+        } else {
+            $('#saveBtn').css('background-color', '');
+        }
+    });
+
+    //input에 value 값이 존재 하지 않을 경우 saveBtn disabled 처리
+    $('.form-control-update, #updateDescription').on('input', function () {
+        // 모든 입력 필드를 검사하여 값이 있는지 확인
+        var allFilled = true;
+        $('.form-control-update, #updateDescription').each(function () {
+            if ($(this).val() === '') {
+                allFilled = false;
+                return false;
+            }
+        });
+
+        // 모든 인풋이 채워져 있으면 saveBtn의 배경색 변경
+        if (allFilled) {
+            $('#updateBtn').css('background-color', '#FFECB7');
+            $('#updateBtn').css('color', '#000000');
+        } else {
+            $('#updateBtn').css('background-color', '');
+        }
+    });
+
+
+</script>
+
+<style>
+    @font-face {
+        font-family: 'BMJUA';
+        src: url('./font/BMJUA_ttf.ttf');
+        font-weight: normal;
+        font-style: normal;
+    }
+
+    @font-face {
+        font-family: 'BMYEONSUNG';
+        src: url('./font/BMYEONSUNG_ttf.ttf');
+        font-weight: normal;
+        font-style: normal;
+    }
+
+    @import url("https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css");
+
+    /* * {
+        font-family: "BMJUA",'Pretendard';
+    } */
+
+    svg {
+        width: 17px;
+        margin: 11.5px;
+    }
+
+    body {
+        /* width: 100%; */
+        font-family: 'Pretendard';
+        max-width: 1920px;
+        margin: 0 auto;
+        font-size: 0 px;
+        background-color: #ffffff;
+    }
+
+    p {
+        margin: 0px;
+    }
+
+    hr {
+        border: 0;
+        height: 3px;
+        background-color: #303030;
+    }
+
+    img {
+        width: 100%;
+        height: auto;
+        height: 100vh;
+        width: 100vw;
+        background-repeat: no-repeat;
+        background-size: cover;
+    }
+
+    .inner {
+        max-width: 1160px;
+        width: 100%;
+        margin: 0 auto;
+    }
+
+    .header {
+        max-width: 1920px;
+        width: 100%;
+        background-color: #ffffff;
+    }
+
+
+
+    /*///꿈 공유하기 버튼 영역입니다.///*/
+    .share-btn {
+        display: inline-block;
+        font-size: 24px;
+        color: black;
+        padding: 15px 40px;
+
+        position: fixed;
+        left: 50%;
+        bottom: 60px;
+        transform: translateX(-50%);
+
+        background-color: #FFECB7;
+        font-weight: 600;
+        border-radius: 38px;
+
+        cursor: pointer;
+
+        z-index: 2;
+    }
+
+    /* ///삭제하기 버튼 팝업 영역입니다./// */
+    .delete-popup {
+        display: none;
+        max-width: 800px;
+        width: 100%;
+        padding: 100px 70px 60px 70px;
+        background-color: #191919;
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        border-radius: 40px;
+        text-align: center;
+        z-index: 5;
+    }
+
+    .delete-popup .warning-text {
+        color: white;
+        font-size: 28px;
+        font-weight: 400;
+        margin-bottom: 60px;
+    }
+
+    .delete-popup .button-wrap #deleteBtn {
+        font-size: 22px;
+        font-weight: 600;
+        padding: 10px 26px;
+        background-color: #FFECB7;
+        color: black;
+        border-radius: 38px;
+        margin-right: 20px;
+        cursor: pointer;
+    }
+
+    .delete-popup .button-wrap .cancel-btn {
+        font-size: 22px;
+        font-weight: 600;
+        padding: 10px 26px;
+        color: #2F2F2F;
+        background-color: #D8D8D8;
+        border-radius: 38px;
+        cursor: pointer;
+    }
+
+
+    /*///꿈 공유하기 버튼 팝업 영역입니다.///*/
+    .popup {
+        display: none;
+        max-width: 800px;
+        width: 100%;
+        padding: 100px 70px 60px 70px;
+        background-color: #191919;
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        border-radius: 40px;
+        z-index: 5;
+        box-shadow: 0px -1px 16px 0px rgba(255, 255, 255, 0.3);
+    }
+
+
+    .popup input {
+        width: 100%;
+        height: 33px;
+        background-color: #303030;
+        border: none;
+        /* 테두리 제거 */
+        border-radius: 10px;
+        /* 둥근 모서리 적용 */
+        padding: 10px 0px 10px 30px;
+        color: white;
+        font-size: 18px;
+        margin-bottom: 20px;
+    }
+
+    .popup textarea {
+        width: 100%;
+        height: 103px;
+        background-color: #303030;
+        border: none;
+        /* 테두리 제거 */
+        border-radius: 10px;
+        /* 둥근 모서리 적용 */
+        padding: 30px 0px 30px 30px;
+        color: white;
+        font-size: 18px;
+        margin-bottom: 20px;
+    }
+
+    .popup textarea:focus {
+        border-color: white;
+        /* 활성화 시 테두리 색상 변경 */
+        outline: none;
+        /* 기본 윤곽선 제거 */
+    }
+
+    .popup input:focus {
+        border-color: white;
+        /* 활성화 시 테두리 색상 변경 */
+        outline: none;
+        /* 기본 윤곽선 제거 */
+    }
+
+    .popup #saveBtn,
+    #updateBtn {
+        font-size: 22px;
+        font-weight: 600;
+        padding: 10px 26px;
+        /* background-color: #FFECB7; */
+        background-color: #5c5c5c;
+        color: #6b6b6b;
+        border-radius: 38px;
+        margin-right: 20px;
+        cursor: pointer;
+    }
+
+    .popup .cancel-btn {
+        font-size: 22px;
+        font-weight: 600;
+        padding: 10px 26px;
+        color: #2F2F2F;
+        background-color: #D8D8D8;
+        border-radius: 38px;
+        cursor: pointer;
+    }
+
+    .button-wrap {
+        display: flex;
+        justify-content: center;
+    }
+
+    .disabled-cover {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        opacity: 0.6;
+        background-color: #757575;
+        z-index: 3;
+        display: none;
+    }
+
+    /* header */
+    #header {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        padding: 10px 60px;
+        background-color: white;
+        color: #191919;
+        font-family: "BMJUA";
+
+        font-size: 30px;
+        border-bottom: 1px solid #e0e3fd;
+        z-index: 10;
+    }
+
+    .nav-main {
+        padding-left: 0;
+    }
+
+    .nav-team-logo {
+        font-size: 30px;
+    }
+
+    .nav-list {
+        display: flex;
+        justify-content: space-between;
+    }
+
+    .list-main {
+        justify-content: left;
+        margin-right: 600px;
+        font-size: 30px;
+    }
+
+    .list-link {
+        margin-left: 70px;
+        margin-bottom: auto;
+        padding: 0px;
+        font-size: 30px;
+
+
+    }
+
+    .list-link:hover {
+        color: black;
+        border-bottom: 2px solid black;
+    }
+
+
+    .bar-bg {
+        position: absolute;
+        width: 100%;
+        height: 5px;
+        bottom: 0;
+        left: 0;
+        background-color: #dfe2f7;
+    }
+
+    .bar-ing {
+        position: absolute;
+        height: 5px;
+        bottom: 0;
+        left: 0;
+        background-color: #191919;
+    }
+
+    ul {
+        list-style: none;
+    }
+
+    /* 개요입니다 */
+    .team-profile-area {
+        font-family: 'Pretendard';
+        text-align: center;
+        
+        margin: 400px auto 400px;
+    }
+
+    .team-profile-head {
+        font-size: 80px;
+    }
+
+    .team-profile-body {
+        color: #303030;
+        font-size: 25px;
+    }
+
+    /*TMI 카드 영역입니다*/
+    .team-tmi-head {
+        text-align: center;
+    }
+
+    .tmi-container {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        width:90%;
+        gap:24px;
+        border: 1px solid #EBEAEC;
+        box-shadow: 0px 2px 4px rgba(0,0,0,0.3);
+        border-radius: 16px;
+        padding: 24px;
+        margin: 40px auto 40px;
+    }
+
+    .card-container {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        width:90%;
+        gap:24px;
+        border: 1px solid #EBEAEC;
+        box-shadow: 0px 2px 4px rgba(0,0,0,0.3);
+        border-radius: 16px;
+        padding: 24px;
+        margin: 40px auto 40px;
+    }
+</style>
+
+<body>
+    <div class="share-popup popup">
+        <div class="form">
+            <input class="form-control" id="profile_img_url" placeholder="이미지 URL">
+        </div>
+        <div class="form">
+            <input class="form-control" id="name" placeholder="이름">
+        </div>
+
+        <div class="form">
+            <input class="form-control" id="goal" placeholder="나의 꿈">
+        </div>
+
+        <div class="form-floating mb-3">
+            <textarea id="description" rows="4" cols="50" placeholder="나의 소개"></textarea>
+        </div>
+
+        <div class="button-wrap">
+            <div id="saveBtn" type="button">등록하기</div>
+            <div class="cancel-btn" type="button">취소</div>
+        </div>
+    </div>
+    <div class="update-popup popup">
+        <div class="form">
+            <input class="form-control-update" data-id='' id="update_profile_img_url" placeholder="이미지 URL">
+        </div>
+        <div class="form">
+            <input class="form-control-update" data-id='' id="update_name" placeholder="이름">
+        </div>
+
+        <div class="form">
+            <input class="form-control-update" data-id='' id="update_goal" placeholder="나의 꿈">
+        </div>
+
+        <div class="form-floating mb-3">
+            <textarea id="updateDescription" data-id='' rows="4" cols="50" placeholder="나의 소개"></textarea>
+        </div>
+
+        <div class="button-wrap">
+            <div id="updateBtn" type="button">수정하기</div>
+            <div class="cancel-btn" type="button">취소</div>
+        </div>
+    </div>
+    <div class="delete-popup">
+        <p class="warning-text">정보를 삭제하시겠습니까?</p>
+        <div class="button-wrap">
+            <div id="deleteBtn" data-id="">삭제하기</div>
+            <div class="cancel-btn" type="button">취소</div>
+        </div>
+    </div>
+
+    <header id="header">
+        <nav>
+            <ul class="nav-list">
+                <li class="list-main"><span class="nav-team-logo">우리 좀 봐조</span></li>
+                <li><a href="#about" class="list-link">팀 소개</a></li>
+                <li><a href="#about" class="list-link">TMI</a></li>
+                <li><a href="#project" class="list-link">팀원들</a></li>
+                <li><a href="#contact" class="list-link">약속과 일정</a></li>
+            </ul>
+        </nav>
+        <div class="bar-bg">
+            <span class="bar-ing" style="width: 79%;"></span>
+        </div>
+    </header>
+
+    <div class="header" id="header-img">
+        <img src="./img/00_header.png">
+    </div>
+
+    <div class="team-profile-area">
+        <h1 class="team-profile-head">우리 좀 봐조</h1>
+        <div class="team-profile-body">
+            우리 좀 봐조 팀원들은 언제나 새로운 시도를 하고 있습니다. <br>튜터,매니저님의 관심을 목표로 개발을 하고 있습니다.
+        </div>
+    </div>
+
+    <div class="tmi-area">
+        <h1 class="team-tmi-head"> 시시콜콜한 TMI</h1>
+        <hr>
+        <div class="tmi-container">
+            <div class="card">
+                <div class="card-header">
+                    박준영
+                </div>
+                <div class="card-body">
+                    <blockquote class="blockquote mb-0">
+                        <p>오늘의 점심은 제육볶음 꽈리고추 어묵 볶음 김치찌개입니다..</p>
+                    </blockquote>
+                </div>
+            </div>
+            <div class="card">
+                <div class="card-header">
+                    박준영
+                </div>
+                <div class="card-body">
+                    <blockquote class="blockquote mb-0">
+                        <p>저는 식물을 키우고 있습니다.</p>
+                    </blockquote>
+                </div>
+            </div>
+            <div>
+                <div class="mb-3">
+                    <label for="exampleFormControlInput1" class="form-label">이름</label>
+                    <input type="email" class="form-control" id="exampleFormControlInput1">
+                  </div>
+                  <div class="mb-3">
+                    <label for="exampleFormControlTextarea1" class="form-label">당신의 TMI</label>
+                    <textarea class="form-control" id="exampleFormControlTextarea1" rows="3"></textarea>
+                  </div>
+                  <button type="button" class="btn btn-dark">입력</button>
+            </div>
+        </div>
+    </div>
+    <div class="card-area">
+        <h1 class="team-tmi-head"> 용감한 팀원들</h1>
+        <hr>
+        <div class="card-container">
+            <div class="card" style="width: 18rem;">
+                <img src="KakaoTalk_20240415_094551344.jpg" class="card-img-top" alt="...">
+                <div class="card-body">
+                  <h5 class="card-title">Card title</h5>
+                  <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+                  <a href="#" class="btn btn-primary">Go somewhere</a>
+                </div>
+              </div>
+        </div>
+    </div>
+    <div class="rule-schedule-area">
+    </div>
+
+    <!-- <div class="footer" id="footer-img">
+        <img src="./img/01_footer.png">
+    </div> -->
+
+
+</body>
+
+</html>
