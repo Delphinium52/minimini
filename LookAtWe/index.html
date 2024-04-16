@@ -231,10 +231,93 @@
         }
     });
 
+    // tmi 등록
+    $("#tbtn").click(async function () {
+        let input = $('#tinput').val();
+        let name = $('#ninput').val();
 
+        let doc = {
+            'name': name,
+            'input': input
+        };
+        await addDoc(collection(db, "tmi"), doc);
+        window.location.reload();
+    });
+
+
+    let docs = await getDocs(collection(db, "tmi"));
+    docs.forEach((doc) => {
+        let row = doc.data();
+
+        let input = row['input'];
+        let name = row['name'];
+
+        let temp_html = `
+        <div class="card">
+            <div class="card-header">
+                ${name}
+            </div>
+            <div class="card-body">
+                <blockquote class="blockquote mb-0">
+                    <p>${input}</p>
+                </blockquote>
+            </div>
+        </div>`;
+
+        $('#tmilist').append(temp_html);
+    });
+
+    // 약속 입력
+    $("#rbtn").click(async function () {
+
+        let input = $('#rinput').val();
+
+        let doc = {
+            'input': input
+        };
+        await addDoc(collection(db, "rules"), doc);
+        window.location.reload();
+    });
+
+    docs = await getDocs(collection(db, "rules"));
+    docs.forEach((doc) => {
+        let row = doc.data();
+
+        let input = row['input'];
+
+        let temp_html = `<li class="list-group-item">${input}</li>`;
+
+        $('#rlist').append(temp_html);
+    });
+
+    // 일정 입력
+    $("#sbtn").click(async function () {
+
+        let input = $('#sinput').val();
+
+        let doc1 = {
+            'input': input,
+        };
+        await addDoc(collection(db, "schedule"), doc1);
+        window.location.reload();
+    });
+
+    docs = await getDocs(collection(db, "schedule"));
+    docs.forEach((doc) => {
+        let row = doc.data();
+
+        let input = row['input'];
+        let id = row['id'];
+
+        let temp_html = `<li class="list-group-item">${input}</li>`;
+
+        $('#slist').append(temp_html);
+    });
 </script>
 
 <style>
+    @import url("https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css");
+
     @font-face {
         font-family: 'BMJUA';
         src: url('./font/BMJUA_ttf.ttf');
@@ -249,7 +332,6 @@
         font-style: normal;
     }
 
-    @import url("https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css");
 
     /* * {
         font-family: "BMJUA",'Pretendard';
@@ -542,7 +624,7 @@
     .team-profile-area {
         font-family: 'Pretendard';
         text-align: center;
-        
+
         margin: 400px auto 400px;
     }
 
@@ -564,10 +646,10 @@
         display: flex;
         flex-direction: column;
         justify-content: space-between;
-        width:90%;
-        gap:24px;
+        width: 90%;
+        gap: 24px;
         border: 1px solid #EBEAEC;
-        box-shadow: 0px 2px 4px rgba(0,0,0,0.3);
+        box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.3);
         border-radius: 16px;
         padding: 24px;
         margin: 40px auto 40px;
@@ -577,13 +659,19 @@
         display: flex;
         flex-direction: column;
         justify-content: space-between;
-        width:90%;
-        gap:24px;
+        width: 90%;
+        gap: 24px;
         border: 1px solid #EBEAEC;
-        box-shadow: 0px 2px 4px rgba(0,0,0,0.3);
+        box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.3);
         border-radius: 16px;
         padding: 24px;
         margin: 40px auto 40px;
+    }
+
+    .rsinput {
+        width: 40%;
+        margin: 5%;
+        text-align: center;
     }
 </style>
 
@@ -668,36 +756,19 @@
         <h1 class="team-tmi-head"> 시시콜콜한 TMI</h1>
         <hr>
         <div class="tmi-container">
-            <div class="card">
-                <div class="card-header">
-                    박준영
-                </div>
-                <div class="card-body">
-                    <blockquote class="blockquote mb-0">
-                        <p>오늘의 점심은 제육볶음 꽈리고추 어묵 볶음 김치찌개입니다..</p>
-                    </blockquote>
-                </div>
-            </div>
-            <div class="card">
-                <div class="card-header">
-                    박준영
-                </div>
-                <div class="card-body">
-                    <blockquote class="blockquote mb-0">
-                        <p>저는 식물을 키우고 있습니다.</p>
-                    </blockquote>
-                </div>
+            <div id="tmilist">
+
             </div>
             <div>
                 <div class="mb-3">
-                    <label for="exampleFormControlInput1" class="form-label">이름</label>
-                    <input type="email" class="form-control" id="exampleFormControlInput1">
-                  </div>
-                  <div class="mb-3">
-                    <label for="exampleFormControlTextarea1" class="form-label">당신의 TMI</label>
-                    <textarea class="form-control" id="exampleFormControlTextarea1" rows="3"></textarea>
-                  </div>
-                  <button type="button" class="btn btn-dark">입력</button>
+                    <label for="ninput" class="form-label">이름</label>
+                    <input type="email" class="form-control" id="ninput">
+                </div>
+                <div class="mb-3">
+                    <label for="tinput" class="form-label">당신의 TMI</label>
+                    <textarea class="form-control" id="tinput" rows="3"></textarea>
+                </div>
+                <button type="button" class="btn btn-dark" id="tbtn">입력</button>
             </div>
         </div>
     </div>
@@ -708,14 +779,43 @@
             <div class="card" style="width: 18rem;">
                 <img src="KakaoTalk_20240415_094551344.jpg" class="card-img-top" alt="...">
                 <div class="card-body">
-                  <h5 class="card-title">Card title</h5>
-                  <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-                  <a href="#" class="btn btn-primary">Go somewhere</a>
+                    <h5 class="card-title">Card title</h5>
+                    <p class="card-text">Some quick example text to build on the card title and make up the bulk of the
+                        card's content.</p>
+                    <a href="#" class="btn btn-primary">Go somewhere</a>
                 </div>
-              </div>
+            </div>
         </div>
     </div>
     <div class="rule-schedule-area">
+    </div>
+
+    <div class="rule-area">
+        <div class="rsinput" style="float: left;">
+            <h1>팀 약속</h1>
+            <div class="my-5" id="rlist" style="height: 300px;">
+                <ul class="list-group list-group-flush">
+                </ul>
+            </div>
+            <div class="input-group mb-3">
+                <input type="text" class="form-control" id="rinput" placeholder="약속을 입력해주세요"
+                    aria-label="Recipient's username" aria-describedby="button-addon2">
+                <button class="btn btn-outline-success" id="rbtn" type="button" id="button-addon2">추가</button>
+            </div>
+        </div>
+
+        <div class="rsinput" style="float: right;">
+            <h1>프로젝트 일정</h1>
+            <div class="my-5" id="slist" style="height: 300px;">
+                <ul class="list-group list-group-flush">
+                </ul>
+            </div>
+            <div class="input-group mb-3">
+                <input type="text" class="form-control" id="sinput" placeholder="일정을 추가해주세요"
+                    aria-label="Recipient's username" aria-describedby="button-addon2">
+                <button class="btn btn-outline-success" id="sbtn" type="button" id="button-addon2">추가</button>
+            </div>
+        </div>
     </div>
 
     <!-- <div class="footer" id="footer-img">
