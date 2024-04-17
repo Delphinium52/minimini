@@ -150,6 +150,10 @@
         await updateDoc(doc(db, "schedule", docId), inputUpdate);
         window.location.reload();
     })
+    // 클릭시 카드 생성하기
+    $('#posting-btn').click(function(){
+        window.location.href = "./newcard.html";
+    })
 </script>
 
 <style>
@@ -507,7 +511,7 @@
             </div>
 
             <!-- 생성 버튼 입니다. -->
-            <button class="custom-btn btn-1">+</button>
+            <button id="posting-btn" class="custom-btn btn-1">+</button>
         </div>
     </div>
 
