@@ -96,12 +96,25 @@
         .then((result) => {
           console.log(result);
           window.alert("저장성공!");
-          window.location.href = "./main.html";
+          window.location.href = "./index.html";
         })
         .catch((err) => {
           console.log(err);
         });
     });
+
+    $("#image").on("change", function(event) {
+
+var file = event.target.files[0];
+
+var reader = new FileReader(); 
+reader.onload = function(e) {
+
+    $("#preview").attr("src", e.target.result);
+}
+
+reader.readAsDataURL(file);
+});
   </script>
   <body>
     <div class="container">
@@ -192,18 +205,18 @@
     </div>
   </body>
   <script>
-    $("#image").on("change", function(event) {
+//     $("#image").on("change", function(event) {
 
-var file = event.target.files[0];
+// var file = event.target.files[0];
 
-var reader = new FileReader(); 
-reader.onload = function(e) {
+// var reader = new FileReader(); 
+// reader.onload = function(e) {
 
-    $("#preview").attr("src", e.target.result);
-}
+//     $("#preview").attr("src", e.target.result);
+// }
 
-reader.readAsDataURL(file);
-});
+// reader.readAsDataURL(file);
+// });
 
 
   </script>
