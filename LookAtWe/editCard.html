@@ -76,6 +76,8 @@
         let github = $("#inputGithub").val();
         let Detail = $("#inputDetail").val();
         var storageRef = ref(storage, name);
+        let img = 'gs://b14jo-130ae.appspot.com/';
+        let imglink = img + name;
         uploadBytes(storageRef, file);
         let doc = {
             name: name,
@@ -85,6 +87,7 @@
             blog: blog,
             github: github,
             inputDetail: Detail,
+            imglink: imglink
         };
         await addDoc(collection(db, "myCard"), doc)
             .then((result) => {
@@ -97,10 +100,10 @@
             });
     });
 
-    //let name = location.href.split('?')[1];
-    //name = decodeURI(name);
-    let name = "sdfaaaaaaaq";
-    const imgPath = "gs://b14jo-130ae.appspot.com/images1.jpg";
+    let name = location.href.split('?')[1];
+    name = decodeURI(name);
+    let imgPath = "gs://b14jo-130ae.appspot.com/" + decodeURI(name);
+
     async function edit(name) {
         const q = await getDocs(query(collection(db, "myCard"), where("name", "==", name)));
         const doc = q.docs[0]; // 첫 번째 문서
