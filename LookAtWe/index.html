@@ -85,16 +85,24 @@
                         <h5 class="card-title" data-title="${name}">${name}</h5>
                         <p class="card-text">${inputDetail}</p>
                         <div class="card-btn">
-                            <a href="#" class="btn btn-primary">자세히 보기</a>
+                            <span class="btn btn-primary">자세히 보기</span>
+                            <h5 class="card-name" data-name="${name}">${name}</h5>
                         </div>
                     </div>
             </div>`;
         $('#card1').append(temp_html);
+        $('.card-name').hide();
         img(imglink, `memberImg${uniqueId}`)
         uniqueId++;
     });
     let button = `<button id="posting-btn" class="custom-btn btn-1">+</button>`;
     $('#card1').append(button);
+
+    // 카드 클릭시 수정 페이지로 이동
+    $(".card-container").on("click", ".card-btn", function () {
+        let imgName = $(this).find(".card-name").data("name");
+        window.location.href = `editCard.html?${imgName}`;
+    })
 
     // tmi 등록
     $("#tbtn").click(async function () {
@@ -205,12 +213,6 @@
     // 클릭시 카드 생성하기
     $('#posting-btn').click(function () {
         window.location.href = "./newcard.html";
-    })
-
-    // 카드 클릭시 수정 페이지로 이동
-    $(".card-container").on("click", ".card", function () {
-        let imgName = $(this).find(".card-title").data("title");
-        window.location.href = `editCard.html?${imgName}`;
     })
 
     // 수정버튼 클릭 메소드
@@ -487,7 +489,7 @@
 
     .card-btn {
       text-align: center;
-      margin: 5px;
+      margin: 200px auto 0px auto;
     }
 
     .card-title {
@@ -678,7 +680,7 @@
         </div>
 
         <!-- 생성 버튼 입니다. -->
-        <button id="posting-btn" class="custom-btn btn-1">+</button>
+        <!-- <button id="posting-btn" class="custom-btn btn-1">+</button> -->
       </div>
     </div>
 
