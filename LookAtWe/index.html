@@ -186,11 +186,14 @@
     //데이터 베이스에서 카드정보 받아서 출력
 
     teamCard.forEach((teamCard,i) => {
+      
       let row = teamCard.data();
       let name = row["name"];
       let inputDetail = row["inputDetail"];
 
       let temp_html = `<div class="card" style="width: 18rem;">
+                <div class="delete-btn" data-id="tes2"></div>
+                <div class="update-btn" data-id="test"><i class="fa-solid fa-pen"></i></div>
                 <img id="myimg${i}" class="card-img-top" alt="...">
                 <div class="card-body">
                     <h5 class="card-title">${name}</h5>
@@ -219,6 +222,7 @@
         })
         .catch((error) => {});
       $("#postCard").append(temp_html);
+     
     });
   </script>
 
@@ -610,7 +614,7 @@
         <h1 class="team-tmi-head"> 용감한 팀원들</h1>
         <div class="anchor" id="member"></div>
         <hr>
-        <div class="card-container">
+        <div class="card-container" id="postCard">
             <div class="card" style="width: 18rem;">
                 <div class="delete-btn" data-id="tes2"></div>
                 <div class="update-btn" data-id="test"><i class="fa-solid fa-pen"></i></div>
