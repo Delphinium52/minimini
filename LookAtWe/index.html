@@ -16,10 +16,10 @@
     import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
     import { getFirestore, collection, addDoc, getDocs, doc, deleteDoc, updateDoc } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
     import {
-      getStorage,
-      ref,
-      uploadBytes,
-      getDownloadURL
+        getStorage,
+        ref,
+        uploadBytes,
+        getDownloadURL
     } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-storage.js";
     //크리에이트 = addDoc
     //리드 = getDocs
@@ -28,21 +28,18 @@
 
     const firebaseConfig = {
         apiKey: "AIzaSyDE3HUsScoepDqKaJERAX430KqLoyV84Oc",
-      authDomain: "b14jo-130ae.firebaseapp.com",
-      projectId: "b14jo-130ae",
-      storageBucket: "b14jo-130ae.appspot.com",
-      messagingSenderId: "582152431286",
-      appId: "1:582152431286:web:8e05fb9b71bbaf5c7f2817",
-      measurementId: "G-C7866NV650",
+        authDomain: "b14jo-130ae.firebaseapp.com",
+        projectId: "b14jo-130ae",
+        storageBucket: "b14jo-130ae.appspot.com",
+        messagingSenderId: "582152431286",
+        appId: "1:582152431286:web:8e05fb9b71bbaf5c7f2817",
+        measurementId: "G-C7866NV650",
     };
 
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
     const storage = getStorage();
     let users = await getDocs(collection(db, "User"));
-
-
-
 
     // tmi 등록
     $("#tbtn").click(async function () {
@@ -98,7 +95,7 @@
 
         let input = row['input'];
 
-        let temp_html = `<li class="list-group-item">${input}</li>`;
+        let temp_html = `<li class="list-group-item py-3"><h5>${input}</h5></li>`;
 
         $('#rlist').append(temp_html);
     });
@@ -110,6 +107,7 @@
 
         let doc1 = {
             'input': input,
+            'tf': 0
         };
         await addDoc(collection(db, "schedule"), doc1);
         window.location.reload();
@@ -122,10 +120,36 @@
         let input = row['input'];
         let id = row['id'];
 
-        let temp_html = `<li class="list-group-item">${input}</li>`;
+        let temp_html = `<li class="list-group-item py-3" id="${doc.id}"><h5>${input}</h5></li>`;
 
         $('#slist').append(temp_html);
     });
+
+    // 더블클릭 시 일정 완료로 변경
+    $(document).on('dblclick', '.list-group-item', async function () {
+        let docId = $(this).attr("id");
+
+        let input = this.innerText;
+
+        let row;
+
+        docs.forEach((doc) => {
+            row = doc.data();
+        })
+
+        let linput = row['input'];
+        let tf = row['tf'];
+
+        let inputUpdate;
+        if (tf == 0) {
+            inputUpdate = {
+                'input': input + " ✅",
+                'tf': 1
+            };
+        }
+        await updateDoc(doc(db, "schedule", docId), inputUpdate);
+        window.location.reload();
+    })
 </script>
 
 <style>
@@ -319,7 +343,7 @@
     .card-container {
         display: flex;
         flex-direction: row;
-        flex-wrap: w;
+        flex-wrap: wrap;
         justify-content: space-between;
         width: 90%;
         gap: 24px;
@@ -328,12 +352,6 @@
         border-radius: 16px;
         padding: 24px;
         margin: 40px auto 40px;
-    }
-
-    .rsinput {
-        width: 40%;
-        margin: 5%;
-        text-align: center;
     }
 
     .card {
@@ -349,6 +367,52 @@
         text-align: center;
         font-size: 25px;
         font-family: "BMJUA";
+    }
+
+    /*Tmi카드 생성 버튼*/
+    /* .frame {
+        width: 90%;
+        text-align: center;
+    } */
+    /* 
+    button {
+        margin: 20px;
+    } */
+
+    .custom-btn {
+        outline: none;
+        width: 300px;
+        height: 574px;
+        padding: 15px 25px;
+        border: 2px solid #000;
+        border-style: dotted;
+        font-family: 'BMJUA';
+        font-weight: 10px;
+        font-size: 50px;
+        margin: 5px auto 0px 5px;
+        background: transparent;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        position: relative;
+        display: inline-block;
+    }
+
+    .btn-1 {
+        transition: all 0.3s ease;
+    }
+
+    .btn-1:hover {
+        box-shadow:
+            -7px -7px 20px 0px #fff9,
+            -4px -4px 5px 0px #fff9,
+            7px 7px 20px 0px #0002,
+            4px 4px 5px 0px #0001;
+    }
+
+    .rsinput {
+        width: 40%;
+        margin: 5%;
+        text-align: center;
     }
 </style>
 
@@ -386,6 +450,7 @@
             <div id="tmilist">
 
             </div>
+            <hr>
             <div>
                 <div class="mb-3">
                     <label for="ninput" class="form-label">이름</label>
@@ -399,6 +464,7 @@
             </div>
         </div>
     </div>
+
     <div class="card-area" id="member">
         <h1 class="team-tmi-head"> 용감한 팀원들</h1>
         <hr>
@@ -439,60 +505,48 @@
                     </div>
                 </div>
             </div>
-            <div class="card" style="width: 18rem;">
-                <img src="KakaoTalk_20240415_094551344.jpg" class="card-img-top" alt="...">
-                <div class="card-body">
-                    <h5 class="card-title">박준영</h5>
-                    <p class="card-text">언제나 개발을 즐겁게 해야한다. 생각하고 있습니다. 처음엔 되지 않아도
-                        포기하지 않고 계속 하다보면 해결 할 수 있습니다.
-                    </p>
-                    <div class="card-btn">
-                        <a href="#" class="btn btn-primary">자세히 보기</a>
-                    </div>
-                </div>
-            </div>
-            <div class="card" style="width: 18rem;">
-                <img src="KakaoTalk_20240415_094551344.jpg" class="card-img-top" alt="...">
-                <div class="card-body">
-                    <h5 class="card-title">박준영</h5>
-                    <p class="card-text">언제나 개발을 즐겁게 해야한다. 생각하고 있습니다. 처음엔 되지 않아도
-                        포기하지 않고 계속 하다보면 해결 할 수 있습니다.
-                    </p>
-                    <div class="card-btn">
-                        <a href="#" class="btn btn-primary">자세히 보기</a>
-                    </div>
-                </div>
-            </div>
-            
+
+            <!-- 생성 버튼 입니다. -->
+            <button class="custom-btn btn-1">+</button>
         </div>
-    </div>
-    <div class="rule-schedule-area">
     </div>
 
     <div class="rule-area" id="ruleschedule">
         <div class="rsinput" style="float: left;">
-            <h1>팀 약속</h1>
-            <div class="my-5" id="rlist" style="height: 300px;">
-                <ul class="list-group list-group-flush">
-                </ul>
+            <div class="card">
+                <div class="card-header py-3">
+                    <h2>팀 약속</h2>
+                </div>
+                <div>
+                    <div id="rlist" style="height: 400px; overflow-y: auto;">
+                        <ul class="list-group list-group-flush">
+                        </ul>
+                    </div>
+                </div>
             </div>
             <div class="input-group mb-3">
-                <input type="text" class="form-control" id="rinput" placeholder="약속을 입력해주세요"
+                <input type="text" class="form-control" id="rinput" placeholder="약속을 입력해주세요."
                     aria-label="Recipient's username" aria-describedby="button-addon2">
-                <button class="btn btn-outline-success" id="rbtn" type="button" id="button-addon2">추가</button>
+                <button class="btn btn-outline-secondary" id="rbtn" type="button" id="button-addon2">추가</button>
             </div>
         </div>
 
         <div class="rsinput" style="float: right;">
-            <h1>프로젝트 일정</h1>
-            <div class="my-5" id="slist" style="height: 300px;">
-                <ul class="list-group list-group-flush">
-                </ul>
+            <div class="card">
+                <div class="card-header py-3">
+                    <h2>프로젝트 일정</h2>
+                </div>
+                <div>
+                    <div id="slist" style="height: 400px; overflow-y: auto;">
+                        <ul class="list-group list-group-flush">
+                        </ul>
+                    </div>
+                </div>
             </div>
             <div class="input-group mb-3">
-                <input type="text" class="form-control" id="sinput" placeholder="일정을 추가해주세요"
+                <input type="text" class="form-control" id="sinput" placeholder="완료된 일정은 더블클릭해 주세요."
                     aria-label="Recipient's username" aria-describedby="button-addon2">
-                <button class="btn btn-outline-success" id="sbtn" type="button" id="button-addon2">추가</button>
+                <button class="btn btn-outline-secondary" id="sbtn" type="button" id="button-addon2">추가</button>
             </div>
         </div>
     </div>
