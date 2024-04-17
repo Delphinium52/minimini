@@ -169,6 +169,7 @@
 
     });
 
+
 </script>
 
 <style>
@@ -324,12 +325,22 @@
         list-style: none;
     }
 
+    .anchor {
+        display: block;
+        height: 250px;
+        /*same height as header*/
+        margin-top: -250px;
+        /*same height as header*/
+        visibility: hidden;
+
+    }
+
     /* 개요입니다 */
     .team-profile-area {
         font-family: 'Pretendard';
         text-align: center;
 
-        margin: 400px auto 400px;
+        margin: 400px auto 600px;
     }
 
     .team-profile-head {
@@ -511,13 +522,18 @@
     </div>
 
     <div class="team-profile-area" id="team">
+        <div class="anchor" id="team"></div>
         <h1 class="team-profile-head">우리 좀 봐조</h1>
         <div class="team-profile-body">
-            우리 좀 봐조 팀원들은 언제나 새로운 시도를 하고 있습니다. <br>튜터,매니저님의 관심을 목표로 개발을 하고 있습니다.
+            우리 좀 봐조 팀원들은 언제나 새로운 시도를 하고 있습니다. <br>튜터,매니저님의 관심을 목표로 개발을 하고 있습니다. <br>
+            <br>또한 협업과 커뮤니케이션 역시 중요하게 생각하며, 팀원들과의 원활한 소통을 통해 함께 성장하고 싶습니다. <br>
+            백엔드 개발 분야에서 더 나은 미래를 향해 달려가는 팀으로서, 새로운 기회와 도전을 기다리고 있습니다.
+            
         </div>
     </div>
 
-    <div class="tmi-area" id="tmi">
+    <div class="tmi-area" >
+        <div class="anchor" id="tmi"></div>
         <h1 class="team-tmi-head"> 시시콜콜한 TMI</h1>
         <hr>
         <div class="tmi-container">
@@ -539,8 +555,9 @@
         </div>
     </div>
 
-    <div class="card-area" id="member">
+    <div class="card-area" >
         <h1 class="team-tmi-head"> 용감한 팀원들</h1>
+        <div class="anchor" id="member"></div>
         <hr>
         <div class="card-container">
             <div class="card" style="width: 18rem;">
@@ -590,7 +607,9 @@
         </div>
     </div>
 
-    <div class="rule-area" id="ruleschedule">
+    
+    <div class="rule-area">
+        <div class="anchor" id="ruleschedule"></div>
         <div class="rsinput" style="float: left;">
             <div class="card">
                 <div class="card-header py-3">
