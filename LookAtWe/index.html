@@ -16,10 +16,10 @@
     import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
     import { getFirestore, collection, addDoc, getDocs, doc, deleteDoc, updateDoc } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
     import {
-      getStorage,
-      ref,
-      uploadBytes,
-      getDownloadURL
+        getStorage,
+        ref,
+        uploadBytes,
+        getDownloadURL
     } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-storage.js";
     //크리에이트 = addDoc
     //리드 = getDocs
@@ -28,12 +28,12 @@
 
     const firebaseConfig = {
         apiKey: "AIzaSyDE3HUsScoepDqKaJERAX430KqLoyV84Oc",
-      authDomain: "b14jo-130ae.firebaseapp.com",
-      projectId: "b14jo-130ae",
-      storageBucket: "b14jo-130ae.appspot.com",
-      messagingSenderId: "582152431286",
-      appId: "1:582152431286:web:8e05fb9b71bbaf5c7f2817",
-      measurementId: "G-C7866NV650",
+        authDomain: "b14jo-130ae.firebaseapp.com",
+        projectId: "b14jo-130ae",
+        storageBucket: "b14jo-130ae.appspot.com",
+        messagingSenderId: "582152431286",
+        appId: "1:582152431286:web:8e05fb9b71bbaf5c7f2817",
+        measurementId: "G-C7866NV650",
     };
 
     const app = initializeApp(firebaseConfig);
@@ -346,17 +346,17 @@
     }
 
     /*Tmi카드 생성 버튼*/
-    .frame {
+    /* .frame {
         width: 90%;
         text-align: center;
-    }
-
+    } */
+    /* 
     button {
         margin: 20px;
-        outline: none;
-    }
+    } */
 
     .custom-btn {
+        outline: none;
         width: 300px;
         height: 574px;
         padding: 15px 25px;
@@ -372,6 +372,7 @@
         position: relative;
         display: inline-block;
     }
+
     .btn-1 {
         transition: all 0.3s ease;
     }
@@ -479,7 +480,7 @@
                     </div>
                 </div>
             </div>
-            
+
             <!-- 생성 버튼 입니다. -->
             <button class="custom-btn btn-1">+</button>
         </div>
