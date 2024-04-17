@@ -14,6 +14,8 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.2/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.2/firebase-firestore-compat.js"></script>
+    <script src="https://kit.fontawesome.com/b6958d5df9.js" crossorigin="anonymous"></script>
+
     <title>우리좀봐조</title>
   </head>
 
@@ -34,6 +36,8 @@
       uploadBytes,
       getDownloadURL,
     } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-storage.js";
+
+
     //크리에이트 = addDoc
     //리드 = getDocs
     //업데이트 = updateDoc
@@ -128,8 +132,7 @@
     docs.forEach((doc) => {
       let row = doc.data();
 
-      let input = row["input"];
-      let id = row["id"];
+        let input = row['input'];
 
       let temp_html = `<li class="list-group-item py-3" id="${doc.id}"><h5>${input}</h5></li>`;
 
@@ -151,20 +154,34 @@
       let linput = row["input"];
       let tf = row["tf"];
 
-      let inputUpdate;
-      if (tf == 0) {
-        inputUpdate = {
-          input: input + " ✅",
-          tf: 1,
-        };
-      }
-      await updateDoc(doc(db, "schedule", docId), inputUpdate);
-      window.location.reload();
-    });
+        let inputUpdate;
+        if (tf == 0) {
+            inputUpdate = {
+                'input': input + " ✅",
+                'tf': 1
+            };
+        }
+
+        await updateDoc(doc(db, "schedule", docId), inputUpdate);
+        window.location.reload();
+    })
     // 클릭시 카드 생성하기
-    $("#posting-btn").click(function () {
-      window.location.href = "./newcard.html";
+    $('#posting-btn').click(function () {
+        window.location.href = "./newcard.html";
+    })
+
+    // 수정버튼 클릭 메소드
+    $(".update-btn").click(function () {
+
     });
+
+    // 딜리트버튼 클릭 메소드
+    $(".delete-btn").click(function () {
+
+    });
+
+
+
 
     //데이터 베이스에서 카드정보 받아서 출력
 
@@ -288,20 +305,25 @@
 
     /* header */
     #header {
-      position: fixed;
-      top: 0;
-      left: 0;
-      right: 0;
-      padding: 20px 60px 10px;
-      background-color: white;
-      color: #191919;
-      font-family: "BMJUA";
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        padding: 20px 60px 0px;
+        background-color: white;
+        color: #191919;
+        font-family: "BMJUA";
 
       font-size: 30px;
       border-bottom: 1px solid #e0e3fd;
       z-index: 10;
     }
-
+    .team-icon {
+        width: 60px;
+        height: 60px;
+        margin: 0px 10px 0px;
+    }
+    
     .nav-main {
       padding-left: 0;
     }
@@ -355,12 +377,22 @@
       list-style: none;
     }
 
+    .anchor {
+        display: block;
+        height: 250px;
+        /*same height as header*/
+        margin-top: -250px;
+        /*same height as header*/
+        visibility: hidden;
+
+    }
+
     /* 개요입니다 */
     .team-profile-area {
       font-family: "Pretendard";
       text-align: center;
 
-      margin: 400px auto 400px;
+        margin: 400px auto 600px;
     }
 
     .team-profile-head {
@@ -420,15 +452,6 @@
     }
 
     /*Tmi카드 생성 버튼*/
-    /* .frame {
-        width: 90%;
-        text-align: center;
-    } */
-    /* 
-    button {
-        margin: 20px;
-    } */
-
     .custom-btn {
       outline: none;
       width: 300px;
@@ -451,10 +474,74 @@
       transition: all 0.3s ease;
     }
 
+
     .btn-1:hover {
       box-shadow: -7px -7px 20px 0px #fff9, -4px -4px 5px 0px #fff9,
         7px 7px 20px 0px #0002, 4px 4px 5px 0px #0001;
     }
+
+    /* 수정 삭제 버튼입니다 */
+    .delete-btn,
+    .update-btn {
+        opacity: 0;
+        transition: opacity 0.5s ease-in-out;
+        text-align: center;
+        padding: 7px;
+        caret-color: transparent;
+
+    }
+
+    .card:hover .delete-btn,
+    .card:hover .update-btn {
+        opacity: 1;
+    }
+
+    .delete-btn {
+        display: block;
+        width: 40px;
+        height: 40px;
+        background-color: gainsboro;
+        border-radius: 50%;
+        position: absolute;
+        top: 0;
+        right: 0;
+        transform: translate(50%, -50%);
+        cursor: pointer;
+    }
+
+    .delete-btn::before,
+    .delete-btn::after {
+        content: '';
+        position: absolute;
+        width: 3px;
+        border-radius: 2px;
+        height: 50%;
+        background-color: black;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%) rotate(45deg);
+        /* 첫 번째 선 */
+    }
+
+
+    .delete-btn::after {
+        transform: translate(-50%, -50%) rotate(-45deg);
+        /* 두 번째 선 */
+    }
+
+    .update-btn {
+        display: block;
+        width: 40px;
+        height: 40px;
+        background-color: gainsboro;
+        border-radius: 50%;
+        position: absolute;
+        top: 0;
+        right: 50px;
+        transform: translate(50%, -50%);
+        cursor: pointer;
+    }
+
 
     .rsinput {
       width: 40%;
@@ -465,20 +552,19 @@
 
   <body>
     <header id="header">
-      <nav>
-        <ul class="nav-list">
-          <li class="list-main">
-            <span class="nav-team-logo">우리 좀 봐조</span>
-          </li>
-          <li><a href="#team" class="list-link">팀 소개</a></li>
-          <li><a href="#tmi" class="list-link">TMI</a></li>
-          <li><a href="#member" class="list-link">팀원들</a></li>
-          <li><a href="#ruleschedule" class="list-link">약속과 일정</a></li>
-        </ul>
-      </nav>
-      <div class="bar-bg">
-        <span class="bar-ing" style="width: 100%"></span>
-      </div>
+        <nav>
+            <ul class="nav-list">
+
+                <li class="list-main"><img src="img/Team_Icon.png" alt="팀 아이콘" class="team-icon"><span class="nav-team-logo">우리 좀 봐조</span></li>
+                <li><a href="#team" class="list-link">팀 소개</a></li>
+                <li><a href="#tmi" class="list-link">TMI</a></li>
+                <li><a href="#member" class="list-link">팀원들</a></li>
+                <li><a href="#ruleschedule" class="list-link">약속과 일정</a></li>
+            </ul>
+        </nav>
+        <div class="bar-bg">
+            <span class="bar-ing" style="width: 100%;"></span>
+        </div>
     </header>
 
     <div class="header">
@@ -486,53 +572,89 @@
     </div>
 
     <div class="team-profile-area" id="team">
-      <h1 class="team-profile-head">우리 좀 봐조</h1>
-      <div class="team-profile-body">
-        우리 좀 봐조 팀원들은 언제나 새로운 시도를 하고 있습니다.
-        <br />튜터,매니저님의 관심을 목표로 개발을 하고 있습니다.
-      </div>
+        <div class="anchor" id="team"></div>
+        <h1 class="team-profile-head">우리 좀 봐조</h1>
+        <div class="team-profile-body">
+            우리 좀 봐조 팀원들은 언제나 새로운 시도를 하고 있습니다. <br>튜터,매니저님의 관심을 목표로 개발을 하고 있습니다. <br>
+            <br>또한 협업과 커뮤니케이션 역시 중요하게 생각하며, 팀원들과의 원활한 소통을 통해 함께 성장하고 싶습니다. <br>
+            백엔드 개발 분야에서 더 나은 미래를 향해 달려가는 팀으로서, 새로운 기회와 도전을 기다리고 있습니다.
+            
+        </div>
     </div>
 
-    <div class="tmi-area" id="tmi">
-      <h1 class="team-tmi-head">시시콜콜한 TMI</h1>
-      <hr />
-      <div class="tmi-container">
-        <div id="tmilist"></div>
-        <hr />
-        <div>
-          <div class="mb-3">
-            <label for="ninput" class="form-label">이름</label>
-            <input type="email" class="form-control" id="ninput" />
-          </div>
-          <div class="mb-3">
-            <label for="tinput" class="form-label">당신의 TMI</label>
-            <textarea class="form-control" id="tinput" rows="3"></textarea>
-          </div>
-          <button type="button" class="btn btn-dark" id="tbtn">입력</button>
+    <div class="tmi-area" >
+        <div class="anchor" id="tmi"></div>
+        <h1 class="team-tmi-head"> 시시콜콜한 TMI</h1>
+        <hr>
+        <div class="tmi-container">
+            <div id="tmilist">
+
+            </div>
+            <hr>
+            <div>
+                <div class="mb-3">
+                    <label for="ninput" class="form-label">이름</label>
+                    <input type="email" class="form-control" id="ninput">
+                </div>
+                <div class="mb-3">
+                    <label for="tinput" class="form-label">당신의 TMI</label>
+                    <textarea class="form-control" id="tinput" rows="3"></textarea>
+                </div>
+                <button type="button" class="btn btn-dark" id="tbtn">입력</button>
+            </div>
         </div>
       </div>
     </div>
 
-    <div class="card-area" id="member">
-      <h1 class="team-tmi-head">용감한 팀원들</h1>
-      <hr />
-      <div class="card-container" id="postCard">
-        <div class="card" style="width: 18rem">
-          <img
-            src="KakaoTalk_20240415_094551344.jpg"
-            class="card-img-top"
-            alt="..."
-          />
-          <div class="card-body">
-            <h5 class="card-title">박준영</h5>
-            <p class="card-text">
-              언제나 개발을 즐겁게 해야한다. 생각하고 있습니다. 처음엔 되지
-              않아도 포기하지 않고 계속 하다보면 해결 할 수 있습니다.
-            </p>
-            <div class="card-btn">
-              <a href="#" class="btn btn-primary">자세히 보기</a>
+    <div class="card-area" >
+        <h1 class="team-tmi-head"> 용감한 팀원들</h1>
+        <div class="anchor" id="member"></div>
+        <hr>
+        <div class="card-container">
+            <div class="card" style="width: 18rem;">
+                <div class="delete-btn" data-id="tes2"></div>
+                <div class="update-btn" data-id="test"><i class="fa-solid fa-pen"></i></div>
+                <img src="KakaoTalk_20240415_094551344.jpg" class="card-img-top" alt="...">
+                <div class="card-body">
+                    <h5 class="card-title">박준영</h5>
+                    <p class="card-text">언제나 개발을 즐겁게 해야한다. 생각하고 있습니다. 처음엔 되지 않아도
+                        포기하지 않고 계속 하다보면 해결 할 수 있습니다.
+                    </p>
+                    <div class="card-btn">
+                        <a href="#" class="btn btn-primary">자세히 보기</a>
+                    </div>
+                </div>
             </div>
-          </div>
+            <div class="card" style="width: 18rem;">
+                <div class="delete-btn" data-id="tes2"></div>
+                <div class="update-btn" data-id="test"><i class="fa-solid fa-pen"></i></div>
+                <img src="KakaoTalk_20240415_094551344.jpg" class="card-img-top" alt="...">
+                <div class="card-body">
+                    <h5 class="card-title">박준영</h5>
+                    <p class="card-text">언제나 개발을 즐겁게 해야한다. 생각하고 있습니다. 처음엔 되지 않아도
+                        포기하지 않고 계속 하다보면 해결 할 수 있습니다.
+                    </p>
+                    <div class="card-btn">
+                        <a href="#" class="btn btn-primary">자세히 보기</a>
+                    </div>
+                </div>
+            </div>
+            <div class="card" style="width: 18rem;">
+                <div class="delete-btn" data-id="tes2"></div>
+                <div class="update-btn" data-id="test"><i class="fa-solid fa-pen"></i></div>
+                <img src="KakaoTalk_20240415_094551344.jpg" class="card-img-top" alt="...">
+                <div class="card-body">
+                    <h5 class="card-title">박준영</h5>
+                    <p class="card-text">언제나 개발을 즐겁게 해야한다. 생각하고 있습니다. 처음엔 되지 않아도
+                        포기하지 않고 계속 하다보면 해결 할 수 있습니다.
+                    </p>
+                    <div class="card-btn">
+                        <a href="#" class="btn btn-primary">자세히 보기</a>
+                    </div>
+                </div>
+            </div>
+            <!-- 생성 버튼 입니다. -->
+            <button id="posting-btn" class="custom-btn btn-1">+</button>
         </div>
 
         <!-- 생성 버튼 입니다. -->
@@ -540,15 +662,25 @@
       </div>
     </div>
 
-    <div class="rule-area" id="ruleschedule">
-      <div class="rsinput" style="float: left">
-        <div class="card">
-          <div class="card-header py-3">
-            <h2>팀 약속</h2>
-          </div>
-          <div>
-            <div id="rlist" style="height: 400px; overflow-y: auto">
-              <ul class="list-group list-group-flush"></ul>
+    
+    <div class="rule-area">
+        <div class="anchor" id="ruleschedule"></div>
+        <div class="rsinput" style="float: left;">
+            <div class="card">
+                <div class="card-header py-3">
+                    <h2>팀 약속</h2>
+                </div>
+                <div>
+                    <div id="rlist" style="height: 400px; overflow-y: auto;">
+                        <ul class="list-group list-group-flush">
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="input-group mb-3">
+                <input type="text" class="form-control" id="rinput" placeholder="약속을 입력해주세요."
+                    aria-label="Recipient's username" aria-describedby="button-addon2">
+                <button class="btn btn-outline-secondary" id="rbtn" type="button" id="button-addon2">추가</button>
             </div>
           </div>
         </div>
