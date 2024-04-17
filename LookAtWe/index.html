@@ -31,7 +31,7 @@
         uploadBytes,
         getDownloadURL,
     } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-storage.js";
-
+    import { query, orderBy } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
 
     //크리에이트 = addDoc
     //리드 = getDocs
@@ -53,6 +53,43 @@
     const storage = getStorage();
     let users = await getDocs(collection(db, "User"));
     let teamCard = await getDocs(collection(db, "myCard"));
+
+
+    //팀원 소개 목록
+    async function img(imgPath, uID) {
+        const imgRef = ref(storage, imgPath);
+        const url = await getDownloadURL(imgRef);
+        document.getElementById(uID).src = url;
+    }
+
+    let uniqueId = 0; // 고유 id를 위한 카운터
+    let members = await getDocs(query(collection(db, "myCard"), orderBy("name", "desc")));
+    //let members = await getDocs(collection(db, "myCard"));
+    members.forEach((doc) => {
+        let row = doc.data();
+
+        let imglink = row['imglink'];
+        let name = row['name'];
+        let inputDetail = row['inputDetail'];
+        let temp_html = `
+            <div class="card" style="width: 18rem;">
+                    <div class="delete-btn" data-id="tes2"></div>
+                    <div class="update-btn" data-id="test"><i class="fa-solid fa-pen"></i></div>
+                    <img id="memberImg${uniqueId}">
+                    <div class="card-body">
+                        <h5 class="card-title" data-title="${name}">${name}</h5>
+                        <p class="card-text">${inputDetail}</p>
+                        <div class="card-btn">
+                            <a href="#" class="btn btn-primary">자세히 보기</a>
+                        </div>
+                    </div>
+            </div>`;
+        $('#card1').append(temp_html);
+        img(imglink, `memberImg${uniqueId}`)
+        uniqueId++;
+    });
+    let button = `<button id="posting-btn" class="custom-btn btn-1">+</button>`;
+    $('#card1').append(button);
 
     // tmi 등록
     $("#tbtn").click(async function () {
@@ -165,8 +202,15 @@
         window.location.href = "./newcard.html";
     })
 
+<<<<<<< HEAD
     $(document).on("click", "#posting-btn" , function() {
         window.location.href = "./newcard.html";
+=======
+    // 카드 클릭시 수정 페이지로 이동
+    $(".card-container").on("click", ".card", function () {
+        let imgName = $(this).find(".card-title").data("title");
+        window.location.href = `editCard.html?${imgName}`;
+>>>>>>> e16855c61fa00586212a6d09d314a408bd61aaa9
     })
 
     // 수정버튼 클릭 메소드
@@ -182,48 +226,46 @@
 
 
 
-    //데이터 베이스에서 카드정보 받아서 출력
+    // teamCard.forEach((teamCard,i) => {
+      
+    //   let row = teamCard.data();
+    //   let name = row["name"];
+    //   let inputDetail = row["inputDetail"];
 
-    teamCard.forEach((teamCard, i) => {
+    //   let temp_html = `<div class="card" style="width: 18rem;">
+    //             <div class="delete-btn" data-id="tes2"></div>
+    //             <div class="update-btn" data-id="test"><i class="fa-solid fa-pen"></i></div>
+    //             <img id="myimg${i}" class="card-img-top" alt="...">
+    //             <div class="card-body">
+    //                 <h5 class="card-title">${name}</h5>
+    //                 <p class="card-text">${inputDetail}
+    //                 </p>
+    //                 <div class="card-btn">
+    //                     <a href="#" class="btn btn-primary">자세히 보기</a>
+    //                 </div>
+    //             </div>
+    //         </div>`;
 
-        let row = teamCard.data();
-        let name = row["name"];
-        let inputDetail = row["inputDetail"];
+    //   getDownloadURL(ref(storage, name))
+    //     .then((url) => {
+    //       // This can be downloaded directly:
+    //       const xhr = new XMLHttpRequest();
+    //       xhr.responseType = "blob";
+    //       xhr.onload = (event) => {
+    //         const blob = xhr.response;
+    //       };
+    //       xhr.open("GET", url);
+    //       xhr.send();
 
-        let temp_html = `
-            <div class="card" style="width: 18rem;">
-                <div class="delete-btn" data-id="tes2"></div>
-                <div class="update-btn" data-id="test"><i class="fa-solid fa-pen"></i></div>
-                <img id="myimg${i}" class="card-img-top" alt="...">
-                <div class="card-body">
-                    <h5 class="card-title">${name}</h5>
-                    <p class="card-text">${inputDetail}
-                    </p>
-                    <div class="card-btn">
-                        <a href="#" class="btn btn-primary">자세히 보기</a>
-                    </div>
-                </div>
-            </div>`;
-
-        getDownloadURL(ref(storage, name))
-            .then((url) => {
-                // This can be downloaded directly:
-                const xhr = new XMLHttpRequest();
-                xhr.responseType = "blob";
-                xhr.onload = (event) => {
-                    const blob = xhr.response;
-                };
-                xhr.open("GET", url);
-                xhr.send();
-
-                // Or inserted into an <img> element
-                const img = document.getElementById(`myimg${i}`);
-                img.setAttribute("src", url);
-            })
-            .catch((error) => { });
-        $("#postCard").append(temp_html);
-    });
-</script>
+    //       // Or inserted into an <img> element
+    //       const img = document.getElementById(`myimg${i}`);
+    //       img.setAttribute("src", url);
+    //     })
+    //     .catch((error) => {});
+    //   $("#postCard").append(temp_html);
+     
+    // });
+  </script>
 
 <style>
     @import url("https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css");
@@ -615,21 +657,26 @@
         <h1 class="team-tmi-head"> 용감한 팀원들</h1>
         <div class="anchor" id="member"></div>
         <hr>
-        <div class="card-container" id="postCard">
-            <!-- <div class="card" style="width: 18rem;">
-                <div class="delete-btn" data-id="tes2"></div>
-                <div class="update-btn" data-id="test"><i class="fa-solid fa-pen"></i></div>
-                <img src="KakaoTalk_20240415_094551344.jpg" class="card-img-top" alt="...">
-                <div class="card-body">
-                    <h5 class="card-title">박준영</h5>
-                    <p class="card-text">언제나 개발을 즐겁게 해야한다. 생각하고 있습니다. 처음엔 되지 않아도
-                        포기하지 않고 계속 하다보면 해결 할 수 있습니다.
-                    </p>
-                    <div class="card-btn">
-                        <a href="#" class="btn btn-primary">자세히 보기</a>
+        <div class="card-container">
+            <div id="card1" class="row row-cols-1 row-cols-md-4 g-3">
+                <!-- <div class="card" style="width: 18rem;">
+                    <div class="delete-btn" data-id="tes2"></div>
+                    <div class="update-btn" data-id="test"><i class="fa-solid fa-pen"></i></div>
+                    <img src="KakaoTalk_20240415_094551344.jpg" class="card-img-top" alt="...">
+                    <div class="card-body">
+                        <h5 class="card-title">박준영</h5>
+                        <p class="card-text">언제나 개발을 즐겁게 해야한다. 생각하고 있습니다. 처음엔 되지 않아도
+                            포기하지 않고 계속 하다보면 해결 할 수 있습니다.
+                        </p>
+                        <div class="card-btn">
+                            <a href="#" class="btn btn-primary">자세히 보기</a>
+                        </div>
                     </div>
-                </div>
-            </div> -->
+                </div> -->
+
+                <!-- 생성 버튼 입니다. -->
+                <!-- <button id="posting-btn" class="custom-btn btn-1">+</button> -->
+            </div>
         </div>
     </div>
     </div>
