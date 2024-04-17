@@ -1,27 +1,40 @@
 <!DOCTYPE html>
 <html lang="en">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://getbootstrap.com/docs/5.3/assets/css/docs.css" rel="stylesheet">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <link
+      href="https://getbootstrap.com/docs/5.3/assets/css/docs.css"
+      rel="stylesheet"
+    />
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.2/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.2/firebase-firestore-compat.js"></script>
     <script src="https://kit.fontawesome.com/b6958d5df9.js" crossorigin="anonymous"></script>
 
     <title>우리좀봐조</title>
-</head>
+  </head>
 
-<script type="module">
+  <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
-    import { getFirestore, collection, addDoc, getDocs, doc, deleteDoc, updateDoc } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
     import {
-        getStorage,
-        ref,
-        uploadBytes,
-        getDownloadURL
+      getFirestore,
+      collection,
+      addDoc,
+      getDocs,
+      doc,
+      deleteDoc,
+      updateDoc,
+    } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
+    import {
+      getStorage,
+      ref,
+      uploadBytes,
+      getDownloadURL,
     } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-storage.js";
     import { query, orderBy } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
 
@@ -31,19 +44,20 @@
     //딜리트 = deleteDoc
 
     const firebaseConfig = {
-        apiKey: "AIzaSyDE3HUsScoepDqKaJERAX430KqLoyV84Oc",
-        authDomain: "b14jo-130ae.firebaseapp.com",
-        projectId: "b14jo-130ae",
-        storageBucket: "b14jo-130ae.appspot.com",
-        messagingSenderId: "582152431286",
-        appId: "1:582152431286:web:8e05fb9b71bbaf5c7f2817",
-        measurementId: "G-C7866NV650",
+      apiKey: "AIzaSyDE3HUsScoepDqKaJERAX430KqLoyV84Oc",
+      authDomain: "b14jo-130ae.firebaseapp.com",
+      projectId: "b14jo-130ae",
+      storageBucket: "b14jo-130ae.appspot.com",
+      messagingSenderId: "582152431286",
+      appId: "1:582152431286:web:8e05fb9b71bbaf5c7f2817",
+      measurementId: "G-C7866NV650",
     };
 
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
     const storage = getStorage();
     let users = await getDocs(collection(db, "User"));
+    let teamCard = await getDocs(collection(db, "myCard"));
 
 
     //팀원 소개 목록
@@ -84,26 +98,25 @@
 
     // tmi 등록
     $("#tbtn").click(async function () {
-        let input = $('#tinput').val();
-        let name = $('#ninput').val();
+      let input = $("#tinput").val();
+      let name = $("#ninput").val();
 
-        let doc = {
-            'name': name,
-            'input': input
-        };
-        await addDoc(collection(db, "tmi"), doc);
-        window.location.reload();
+      let doc = {
+        name: name,
+        input: input,
+      };
+      await addDoc(collection(db, "tmi"), doc);
+      window.location.reload();
     });
-
 
     let docs = await getDocs(collection(db, "tmi"));
     docs.forEach((doc) => {
-        let row = doc.data();
+      let row = doc.data();
 
-        let input = row['input'];
-        let name = row['name'];
+      let input = row["input"];
+      let name = row["name"];
 
-        let temp_html = `
+      let temp_html = `
         <div class="card">
             <div class="card-header">
                 ${name}
@@ -115,70 +128,68 @@
             </div>
         </div>`;
 
-        $('#tmilist').append(temp_html);
+      $("#tmilist").append(temp_html);
     });
 
     // 약속 입력
     $("#rbtn").click(async function () {
+      let input = $("#rinput").val();
 
-        let input = $('#rinput').val();
-
-        let doc = {
-            'input': input
-        };
-        await addDoc(collection(db, "rules"), doc);
-        window.location.reload();
+      let doc = {
+        input: input,
+      };
+      await addDoc(collection(db, "rules"), doc);
+      window.location.reload();
     });
 
     docs = await getDocs(collection(db, "rules"));
     docs.forEach((doc) => {
-        let row = doc.data();
+      let row = doc.data();
 
-        let input = row['input'];
+      let input = row["input"];
 
-        let temp_html = `<li class="list-group-item py-3"><h5>${input}</h5></li>`;
+      let temp_html = `<li class="list-group-item py-3"><h5>${input}</h5></li>`;
 
-        $('#rlist').append(temp_html);
+      $("#rlist").append(temp_html);
     });
 
     // 일정 입력
     $("#sbtn").click(async function () {
+      let input = $("#sinput").val();
 
-        let input = $('#sinput').val();
-
-        let doc1 = {
-            'input': input,
-            'tf': 0
-        };
-        await addDoc(collection(db, "schedule"), doc1);
-        window.location.reload();
+      let doc1 = {
+        input: input,
+        tf: 0,
+      };
+      await addDoc(collection(db, "schedule"), doc1);
+      window.location.reload();
     });
 
     docs = await getDocs(collection(db, "schedule"));
     docs.forEach((doc) => {
-        let row = doc.data();
+      let row = doc.data();
 
         let input = row['input'];
 
-        let temp_html = `<li class="list-group-item py-3" id="${doc.id}"><h5>${input}</h5></li>`;
+      let temp_html = `<li class="list-group-item py-3" id="${doc.id}"><h5>${input}</h5></li>`;
 
-        $('#slist').append(temp_html);
+      $("#slist").append(temp_html);
     });
 
     // 더블클릭 시 일정 완료로 변경
-    $(document).on('dblclick', '.list-group-item', async function () {
-        let docId = $(this).attr("id");
+    $(document).on("dblclick", ".list-group-item", async function () {
+      let docId = $(this).attr("id");
 
-        let input = this.innerText;
+      let input = this.innerText;
 
-        let row;
+      let row;
 
-        docs.forEach((doc) => {
-            row = doc.data();
-        })
+      docs.forEach((doc) => {
+        row = doc.data();
+      });
 
-        let linput = row['input'];
-        let tf = row['tf'];
+      let linput = row["input"];
+      let tf = row["tf"];
 
         let inputUpdate;
         if (tf == 0) {
@@ -214,88 +225,127 @@
 
 
 
-</script>
 
-<style>
+    // teamCard.forEach((teamCard,i) => {
+      
+    //   let row = teamCard.data();
+    //   let name = row["name"];
+    //   let inputDetail = row["inputDetail"];
+
+    //   let temp_html = `<div class="card" style="width: 18rem;">
+    //             <div class="delete-btn" data-id="tes2"></div>
+    //             <div class="update-btn" data-id="test"><i class="fa-solid fa-pen"></i></div>
+    //             <img id="myimg${i}" class="card-img-top" alt="...">
+    //             <div class="card-body">
+    //                 <h5 class="card-title">${name}</h5>
+    //                 <p class="card-text">${inputDetail}
+    //                 </p>
+    //                 <div class="card-btn">
+    //                     <a href="#" class="btn btn-primary">자세히 보기</a>
+    //                 </div>
+    //             </div>
+    //         </div>`;
+
+    //   getDownloadURL(ref(storage, name))
+    //     .then((url) => {
+    //       // This can be downloaded directly:
+    //       const xhr = new XMLHttpRequest();
+    //       xhr.responseType = "blob";
+    //       xhr.onload = (event) => {
+    //         const blob = xhr.response;
+    //       };
+    //       xhr.open("GET", url);
+    //       xhr.send();
+
+    //       // Or inserted into an <img> element
+    //       const img = document.getElementById(`myimg${i}`);
+    //       img.setAttribute("src", url);
+    //     })
+    //     .catch((error) => {});
+    //   $("#postCard").append(temp_html);
+     
+    // });
+  </script>
+
+  <style>
     @import url("https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css");
 
     @font-face {
-        font-family: 'BMJUA';
-        src: url('./font/BMJUA_ttf.ttf');
-        font-weight: normal;
-        font-style: normal;
+      font-family: "BMJUA";
+      src: url("./font/BMJUA_ttf.ttf");
+      font-weight: normal;
+      font-style: normal;
     }
 
     @font-face {
-        font-family: 'BMYEONSUNG';
-        src: url('./font/BMYEONSUNG_ttf.ttf');
-        font-weight: normal;
-        font-style: normal;
+      font-family: "BMYEONSUNG";
+      src: url("./font/BMYEONSUNG_ttf.ttf");
+      font-weight: normal;
+      font-style: normal;
     }
-
 
     /* * {
         font-family: "BMJUA",'Pretendard';
     } */
 
     svg {
-        width: 17px;
-        margin: 11.5px;
+      width: 17px;
+      margin: 11.5px;
     }
 
     body {
-        /* width: 100%; */
-        font-family: 'Pretendard';
-        max-width: 1920px;
-        margin: 0 auto;
-        font-size: 0 px;
-        background-color: #ffffff;
+      /* width: 100%; */
+      font-family: "Pretendard";
+      max-width: 1920px;
+      margin: 0 auto;
+      font-size: 0 px;
+      background-color: #ffffff;
     }
 
     p {
-        margin: 0px;
+      margin: 0px;
     }
 
     hr {
-        border: 0;
-        height: 3px;
-        background-color: #303030;
+      border: 0;
+      height: 3px;
+      background-color: #303030;
     }
 
     #header-img {
-        height: auto;
-        height: 100vh;
-        width: 100vw;
-        background-repeat: no-repeat;
-        background-size: cover;
+      height: auto;
+      height: 100vh;
+      width: 100vw;
+      background-repeat: no-repeat;
+      background-size: cover;
     }
 
     #footer-img {
-        width: 100%;
+      width: 100%;
     }
 
     .inner {
-        max-width: 1160px;
-        width: 100%;
-        margin: 0 auto;
+      max-width: 1160px;
+      width: 100%;
+      margin: 0 auto;
     }
 
     .header {
-        max-width: 1920px;
-        width: 100%;
-        background-color: #ffffff;
+      max-width: 1920px;
+      width: 100%;
+      background-color: #ffffff;
     }
 
     .disabled-cover {
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        opacity: 0.6;
-        background-color: #757575;
-        z-index: 3;
-        display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      opacity: 0.6;
+      background-color: #757575;
+      z-index: 3;
+      display: none;
     }
 
     /* header */
@@ -304,165 +354,175 @@
         top: 0;
         left: 0;
         right: 0;
-        padding: 20px 60px 10px;
+        padding: 20px 60px 0px;
         background-color: white;
         color: #191919;
         font-family: "BMJUA";
 
-        font-size: 30px;
-        border-bottom: 1px solid #e0e3fd;
-        z-index: 10;
+      font-size: 30px;
+      border-bottom: 1px solid #e0e3fd;
+      z-index: 10;
     }
-
+    .team-icon {
+        width: 60px;
+        height: 60px;
+        margin: 0px 10px 0px;
+    }
+    
     .nav-main {
-        padding-left: 0;
+      padding-left: 0;
     }
 
     .nav-team-logo {
-        font-size: 30px;
+      font-size: 30px;
     }
 
     .nav-list {
-        display: flex;
-        justify-content: space-between;
+      display: flex;
+      justify-content: space-between;
     }
 
     .list-main {
-        justify-content: left;
-        margin-right: 600px;
-        font-size: 30px;
+      justify-content: left;
+      margin-right: 600px;
+      font-size: 30px;
     }
 
     .list-link {
-        margin-left: 70px;
-        margin-bottom: auto;
-        padding: 0px;
-        font-size: 30px;
-        color: gray;
-
+      margin-left: 70px;
+      margin-bottom: auto;
+      padding: 0px;
+      font-size: 30px;
+      color: gray;
     }
 
     .list-link:hover {
-        color: black;
-        border-bottom: 2px solid black;
+      color: black;
+      border-bottom: 2px solid black;
     }
 
-
     .bar-bg {
-        position: absolute;
-        width: 100%;
-        height: 5px;
-        bottom: 0;
-        left: 0;
-        background-color: #dfe2f7;
+      position: absolute;
+      width: 100%;
+      height: 5px;
+      bottom: 0;
+      left: 0;
+      background-color: #dfe2f7;
     }
 
     .bar-ing {
-        position: absolute;
-        height: 5px;
-        bottom: 0;
-        left: 0;
-        background-color: #191919;
+      position: absolute;
+      height: 5px;
+      bottom: 0;
+      left: 0;
+      background-color: #191919;
     }
 
     ul {
-        list-style: none;
+      list-style: none;
+    }
+
+    .anchor {
+        display: block;
+        height: 250px;
+        /*same height as header*/
+        margin-top: -250px;
+        /*same height as header*/
+        visibility: hidden;
+
     }
 
     /* 개요입니다 */
     .team-profile-area {
-        font-family: 'Pretendard';
-        text-align: center;
+      font-family: "Pretendard";
+      text-align: center;
 
-        margin: 400px auto 400px;
+        margin: 400px auto 600px;
     }
 
     .team-profile-head {
-        font-size: 80px;
+      font-size: 80px;
     }
 
     .team-profile-body {
-        color: #303030;
-        font-size: 25px;
+      color: #303030;
+      font-size: 25px;
     }
 
     /*TMI 카드 영역입니다*/
     .team-tmi-head {
-        text-align: center;
+      text-align: center;
     }
 
     .tmi-container {
-        display: flex;
-        flex-direction: column;
-        justify-content: space-between;
-        width: 90%;
-        gap: 24px;
-        border: 1px solid #EBEAEC;
-        box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.3);
-        border-radius: 16px;
-        padding: 24px;
-        margin: 40px auto 40px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      width: 90%;
+      gap: 24px;
+      border: 1px solid #ebeaec;
+      box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.3);
+      border-radius: 16px;
+      padding: 24px;
+      margin: 40px auto 40px;
     }
 
     .card-container {
-        display: flex;
-        flex-direction: row;
-        flex-wrap: wrap;
-        justify-content: space-between;
-        width: 90%;
-        gap: 24px;
-        border: 1px solid #EBEAEC;
-        box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.3);
-        border-radius: 16px;
-        padding: 24px;
-        margin: 40px auto 40px;
+      display: flex;
+      flex-direction: row;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      width: 90%;
+      gap: 24px;
+      border: 1px solid #ebeaec;
+      box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.3);
+      border-radius: 16px;
+      padding: 24px;
+      margin: 40px auto 40px;
     }
 
     .card {
-        margin: 5px 50px 5px 75px;
+      margin: 5px 0 5px 0;
     }
 
     .card-btn {
-        text-align: center;
-        margin: 5px;
+      text-align: center;
+      margin: 5px;
     }
 
     .card-title {
-        text-align: center;
-        font-size: 25px;
-        font-family: "BMJUA";
+      text-align: center;
+      font-size: 25px;
+      font-family: "BMJUA";
     }
 
     /*Tmi카드 생성 버튼*/
     .custom-btn {
-        outline: none;
-        width: 290px;
-        height: 574px;
-        padding: 15px 25px;
-        border: 2px solid #000;
-        border-style: dotted;
-        font-family: 'BMJUA';
-        font-weight: 10px;
-        font-size: 50px;
-        margin: 5px 50px 5px 75px;
-        background: transparent;
-        cursor: pointer;
-        transition: all 0.3s ease;
-        position: relative;
-        display: inline-block;
+      outline: none;
+      width: 300px;
+      height: 574px;
+      padding: 15px 25px;
+      border: 2px solid #000;
+      border-style: dotted;
+      font-family: "BMJUA";
+      font-weight: 10px;
+      font-size: 50px;
+      margin: 5px auto 0px 5px;
+      background: transparent;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      position: relative;
+      display: inline-block;
     }
 
     .btn-1 {
-        transition: all 0.3s ease;
+      transition: all 0.3s ease;
     }
 
 
     .btn-1:hover {
-        box-shadow:
-            -7px -7px 20px 0px #fff9,
-            -4px -4px 5px 0px #fff9,
-            7px 7px 20px 0px #0002,
-            4px 4px 5px 0px #0001;
+      box-shadow: -7px -7px 20px 0px #fff9, -4px -4px 5px 0px #fff9,
+        7px 7px 20px 0px #0002, 4px 4px 5px 0px #0001;
     }
 
     /* 수정 삭제 버튼입니다 */
@@ -529,17 +589,18 @@
 
 
     .rsinput {
-        width: 40%;
-        margin: 5%;
-        text-align: center;
+      width: 40%;
+      margin: 5%;
+      text-align: center;
     }
-</style>
+  </style>
 
-<body>
+  <body>
     <header id="header">
         <nav>
             <ul class="nav-list">
-                <li class="list-main"><span class="nav-team-logo">우리 좀 봐조</span></li>
+
+                <li class="list-main"><img src="img/Team_Icon.png" alt="팀 아이콘" class="team-icon"><span class="nav-team-logo">우리 좀 봐조</span></li>
                 <li><a href="#team" class="list-link">팀 소개</a></li>
                 <li><a href="#tmi" class="list-link">TMI</a></li>
                 <li><a href="#member" class="list-link">팀원들</a></li>
@@ -552,17 +613,22 @@
     </header>
 
     <div class="header">
-        <img src="./img/00_header.png" id="header-img">
+      <img src="./img/00_header.png" id="header-img" />
     </div>
 
     <div class="team-profile-area" id="team">
+        <div class="anchor" id="team"></div>
         <h1 class="team-profile-head">우리 좀 봐조</h1>
         <div class="team-profile-body">
-            우리 좀 봐조 팀원들은 언제나 새로운 시도를 하고 있습니다. <br>튜터,매니저님의 관심을 목표로 개발을 하고 있습니다.
+            우리 좀 봐조 팀원들은 언제나 새로운 시도를 하고 있습니다. <br>튜터,매니저님의 관심을 목표로 개발을 하고 있습니다. <br>
+            <br>또한 협업과 커뮤니케이션 역시 중요하게 생각하며, 팀원들과의 원활한 소통을 통해 함께 성장하고 싶습니다. <br>
+            백엔드 개발 분야에서 더 나은 미래를 향해 달려가는 팀으로서, 새로운 기회와 도전을 기다리고 있습니다.
+            
         </div>
     </div>
 
-    <div class="tmi-area" id="tmi">
+    <div class="tmi-area" >
+        <div class="anchor" id="tmi"></div>
         <h1 class="team-tmi-head"> 시시콜콜한 TMI</h1>
         <hr>
         <div class="tmi-container">
@@ -582,10 +648,12 @@
                 <button type="button" class="btn btn-dark" id="tbtn">입력</button>
             </div>
         </div>
+      </div>
     </div>
 
-    <div class="card-area" id="member">
+    <div class="card-area" >
         <h1 class="team-tmi-head"> 용감한 팀원들</h1>
+        <div class="anchor" id="member"></div>
         <hr>
         <div class="card-container">
             <div id="card1" class="row row-cols-1 row-cols-md-4 g-3">
@@ -608,9 +676,15 @@
                 <!-- <button id="posting-btn" class="custom-btn btn-1">+</button> -->
             </div>
         </div>
+
+        <!-- 생성 버튼 입니다. -->
+        <button id="posting-btn" class="custom-btn btn-1">+</button>
+      </div>
     </div>
 
-    <div class="rule-area" id="ruleschedule">
+    
+    <div class="rule-area">
+        <div class="anchor" id="ruleschedule"></div>
         <div class="rsinput" style="float: left;">
             <div class="card">
                 <div class="card-header py-3">
@@ -628,33 +702,62 @@
                     aria-label="Recipient's username" aria-describedby="button-addon2">
                 <button class="btn btn-outline-secondary" id="rbtn" type="button" id="button-addon2">추가</button>
             </div>
+          </div>
         </div>
+        <div class="input-group mb-3">
+          <input
+            type="text"
+            class="form-control"
+            id="rinput"
+            placeholder="약속을 입력해주세요."
+            aria-label="Recipient's username"
+            aria-describedby="button-addon2"
+          />
+          <button
+            class="btn btn-outline-secondary"
+            id="rbtn"
+            type="button"
+            id="button-addon2"
+          >
+            추가
+          </button>
+        </div>
+      </div>
 
-        <div class="rsinput" style="float: right;">
-            <div class="card">
-                <div class="card-header py-3">
-                    <h2>프로젝트 일정</h2>
-                </div>
-                <div>
-                    <div id="slist" style="height: 400px; overflow-y: auto;">
-                        <ul class="list-group list-group-flush">
-                        </ul>
-                    </div>
-                </div>
+      <div class="rsinput" style="float: right">
+        <div class="card">
+          <div class="card-header py-3">
+            <h2>프로젝트 일정</h2>
+          </div>
+          <div>
+            <div id="slist" style="height: 400px; overflow-y: auto">
+              <ul class="list-group list-group-flush"></ul>
             </div>
-            <div class="input-group mb-3">
-                <input type="text" class="form-control" id="sinput" placeholder="완료된 일정은 더블클릭해 주세요."
-                    aria-label="Recipient's username" aria-describedby="button-addon2">
-                <button class="btn btn-outline-secondary" id="sbtn" type="button" id="button-addon2">추가</button>
-            </div>
+          </div>
         </div>
+        <div class="input-group mb-3">
+          <input
+            type="text"
+            class="form-control"
+            id="sinput"
+            placeholder="완료된 일정은 더블클릭해 주세요."
+            aria-label="Recipient's username"
+            aria-describedby="button-addon2"
+          />
+          <button
+            class="btn btn-outline-secondary"
+            id="sbtn"
+            type="button"
+            id="button-addon2"
+          >
+            추가
+          </button>
+        </div>
+      </div>
     </div>
 
     <div class="footer">
-        <img src="./img/01_footer.png" id="footer-img">
+      <img src="./img/01_footer.png" id="footer-img" />
     </div>
-
-
-</body>
-
+  </body>
 </html>
