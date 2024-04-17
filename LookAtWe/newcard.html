@@ -83,6 +83,8 @@
       let github = $("#inputGithub").val();
       let Detail = $("#inputDetail").val();
       var storageRef = ref(storage, name);
+      let img = 'gs://b14jo-130ae.appspot.com/';
+      let imglink = img+name;
       uploadBytes(storageRef, file);
       let doc = {
         name: name,
@@ -93,6 +95,7 @@
         blog: blog,
         github: github,
         inputDetail: Detail,
+        imglink : imglink
       };
       await addDoc(collection(db, "myCard"), doc)
         .then((result) => {

@@ -122,7 +122,6 @@
         let row = doc.data();
 
         let input = row['input'];
-        let id = row['id'];
 
         let temp_html = `<li class="list-group-item py-3" id="${doc.id}"><h5>${input}</h5></li>`;
 
@@ -151,6 +150,7 @@
                 'tf': 1
             };
         }
+
         await updateDoc(doc(db, "schedule", docId), inputUpdate);
         window.location.reload();
     })
