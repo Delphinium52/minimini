@@ -370,15 +370,6 @@
     }
 
     /*Tmi카드 생성 버튼*/
-    /* .frame {
-        width: 90%;
-        text-align: center;
-    } */
-    /* 
-    button {
-        margin: 20px;
-    } */
-
     .custom-btn {
         outline: none;
         width: 300px;
@@ -401,6 +392,7 @@
         transition: all 0.3s ease;
     }
 
+
     .btn-1:hover {
         box-shadow:
             -7px -7px 20px 0px #fff9,
@@ -408,6 +400,65 @@
             7px 7px 20px 0px #0002,
             4px 4px 5px 0px #0001;
     }
+
+    /* 수정 삭제 버튼입니다 */
+    .delete-btn,
+    .update-btn {
+        opacity: 0;
+        transition: opacity 0.5s ease-in-out;
+    }
+
+    .card:hover .delete-btn,
+    .card:hover .update-btn {
+        opacity: 1;
+    }
+
+    .delete-btn {
+        display: block;
+        width: 40px;
+        height: 40px;
+        background-color: #646464;
+        border-radius: 50%;
+        position: absolute;
+        top: 0;
+        right: 0;
+        transform: translate(50%, -50%);
+        cursor: pointer;
+    }
+
+    .delete-btn::before,
+    .delete-btn::after {
+        content: '';
+        position: absolute;
+        width: 3px;
+        border-radius: 2px;
+        height: 50%;
+        background-color: #c6c6c6;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%) rotate(45deg);
+        /* 첫 번째 선 */
+    }
+
+
+    .delete-btn::after {
+        transform: translate(-50%, -50%) rotate(-45deg);
+        /* 두 번째 선 */
+    }
+
+    .update-btn {
+        display: block;
+        width: 40px;
+        height: 40px;
+        background-color: #646464;
+        border-radius: 50%;
+        position: absolute;
+        top: 0;
+        right: 50px;
+        transform: translate(50%, -50%);
+        cursor: pointer;
+    }
+
 
     .rsinput {
         width: 40%;
@@ -470,6 +521,8 @@
         <hr>
         <div class="card-container">
             <div class="card" style="width: 18rem;">
+                <div class="delete-btn" data-id="tes2"></div>
+                <div class="update-btn" data-id="test"><i class="fa-solid fa-pen"></i></div>
                 <img src="KakaoTalk_20240415_094551344.jpg" class="card-img-top" alt="...">
                 <div class="card-body">
                     <h5 class="card-title">박준영</h5>
