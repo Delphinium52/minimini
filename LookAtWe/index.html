@@ -260,7 +260,7 @@
         top: 0;
         left: 0;
         right: 0;
-        padding: 20px 60px 10px;
+        padding: 20px 60px 0px;
         background-color: white;
         color: #191919;
         font-family: "BMJUA";
@@ -269,7 +269,12 @@
         border-bottom: 1px solid #e0e3fd;
         z-index: 10;
     }
-
+    .team-icon {
+        width: 60px;
+        height: 60px;
+        margin: 0px 10px 0px;
+    }
+    
     .nav-main {
         padding-left: 0;
     }
@@ -505,7 +510,8 @@
     <header id="header">
         <nav>
             <ul class="nav-list">
-                <li class="list-main"><span class="nav-team-logo">우리 좀 봐조</span></li>
+
+                <li class="list-main"><img src="img/Team_Icon.png" alt="팀 아이콘" class="team-icon"><span class="nav-team-logo">우리 좀 봐조</span></li>
                 <li><a href="#team" class="list-link">팀 소개</a></li>
                 <li><a href="#tmi" class="list-link">TMI</a></li>
                 <li><a href="#member" class="list-link">팀원들</a></li>
