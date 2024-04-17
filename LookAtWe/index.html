@@ -9,6 +9,8 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.2/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.2/firebase-firestore-compat.js"></script>
+    <script src="https://kit.fontawesome.com/b6958d5df9.js" crossorigin="anonymous"></script>
+
     <title>우리좀봐조</title>
 </head>
 
@@ -21,6 +23,8 @@
         uploadBytes,
         getDownloadURL
     } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-storage.js";
+
+
     //크리에이트 = addDoc
     //리드 = getDocs
     //업데이트 = updateDoc
@@ -118,7 +122,6 @@
         let row = doc.data();
 
         let input = row['input'];
-        let id = row['id'];
 
         let temp_html = `<li class="list-group-item py-3" id="${doc.id}"><h5>${input}</h5></li>`;
 
@@ -147,6 +150,7 @@
                 'tf': 1
             };
         }
+
         await updateDoc(doc(db, "schedule", docId), inputUpdate);
         window.location.reload();
     })
@@ -159,6 +163,16 @@
         let imgName = $(this).find(".card-title").data("title");
         window.location.href = `editCard.html?${imgName}`;
     })
+    // 수정버튼 클릭 메소드
+    $(".update-btn").click(function () {
+
+    });
+
+    // 딜리트버튼 클릭 메소드
+    $(".delete-btn").click(function () {
+
+    });
+
 </script>
 
 <style>
@@ -379,15 +393,6 @@
     }
 
     /*Tmi카드 생성 버튼*/
-    /* .frame {
-        width: 90%;
-        text-align: center;
-    } */
-    /* 
-    button {
-        margin: 20px;
-    } */
-
     .custom-btn {
         outline: none;
         width: 300px;
@@ -410,6 +415,7 @@
         transition: all 0.3s ease;
     }
 
+
     .btn-1:hover {
         box-shadow:
             -7px -7px 20px 0px #fff9,
@@ -417,6 +423,69 @@
             7px 7px 20px 0px #0002,
             4px 4px 5px 0px #0001;
     }
+
+    /* 수정 삭제 버튼입니다 */
+    .delete-btn,
+    .update-btn {
+        opacity: 0;
+        transition: opacity 0.5s ease-in-out;
+        text-align: center;
+        padding: 7px;
+        caret-color: transparent;
+
+    }
+
+    .card:hover .delete-btn,
+    .card:hover .update-btn {
+        opacity: 1;
+    }
+
+    .delete-btn {
+        display: block;
+        width: 40px;
+        height: 40px;
+        background-color: gainsboro;
+        border-radius: 50%;
+        position: absolute;
+        top: 0;
+        right: 0;
+        transform: translate(50%, -50%);
+        cursor: pointer;
+    }
+
+    .delete-btn::before,
+    .delete-btn::after {
+        content: '';
+        position: absolute;
+        width: 3px;
+        border-radius: 2px;
+        height: 50%;
+        background-color: black;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%) rotate(45deg);
+        /* 첫 번째 선 */
+    }
+
+
+    .delete-btn::after {
+        transform: translate(-50%, -50%) rotate(-45deg);
+        /* 두 번째 선 */
+    }
+
+    .update-btn {
+        display: block;
+        width: 40px;
+        height: 40px;
+        background-color: gainsboro;
+        border-radius: 50%;
+        position: absolute;
+        top: 0;
+        right: 50px;
+        transform: translate(50%, -50%);
+        cursor: pointer;
+    }
+
 
     .rsinput {
         width: 40%;
@@ -479,6 +548,8 @@
         <hr>
         <div class="card-container">
             <div class="card" style="width: 18rem;">
+                <div class="delete-btn" data-id="tes2"></div>
+                <div class="update-btn" data-id="test"><i class="fa-solid fa-pen"></i></div>
                 <img src="KakaoTalk_20240415_094551344.jpg" class="card-img-top" alt="...">
                 <div class="card-body">
                     <h5 class="card-title">박준영</h5>
@@ -491,6 +562,8 @@
                 </div>
             </div>
             <div class="card" style="width: 18rem;">
+                <div class="delete-btn" data-id="tes2"></div>
+                <div class="update-btn" data-id="test"><i class="fa-solid fa-pen"></i></div>
                 <img src="KakaoTalk_20240415_094551344.jpg" class="card-img-top" alt="...">
                 <div class="card-body">
                     <h5 class="card-title">박준영</h5>
@@ -503,6 +576,8 @@
                 </div>
             </div>
             <div class="card" style="width: 18rem;">
+                <div class="delete-btn" data-id="tes2"></div>
+                <div class="update-btn" data-id="test"><i class="fa-solid fa-pen"></i></div>
                 <img src="KakaoTalk_20240415_094551344.jpg" class="card-img-top" alt="...">
                 <div class="card-body">
                     <h5 class="card-title">박준영</h5>
@@ -514,7 +589,6 @@
                     </div>
                 </div>
             </div>
-
             <!-- 생성 버튼 입니다. -->
             <button id="posting-btn" class="custom-btn btn-1">+</button>
         </div>
