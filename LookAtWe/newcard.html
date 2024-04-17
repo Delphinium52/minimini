@@ -109,8 +109,47 @@
 
     var file = event.target.files[0];
 
+<<<<<<< HEAD
     var reader = new FileReader();
     reader.onload = function (e) {
+=======
+    //db 저장
+    $("#save").click(async function () {
+      var file = document.querySelector("#image").files[0];
+      let name = $("#inputName").val();
+      let birth = $("#inputBirth").val();
+      let mbti = $("#inputMbit").val();
+      let hobby = $("#inputHobby").val();
+      let advan = $("#inputAdvan").val();
+      let blog = $("#inputBlog").val();
+      let github = $("#inputGithub").val();
+      let Detail = $("#inputDetail").val();
+      var storageRef = ref(storage, name);
+      let img = 'gs://b14jo-130ae.appspot.com/';
+      let imglink = img+name;
+      uploadBytes(storageRef, file);
+      let doc = {
+        name: name,
+        birth: birth,
+        mbit: mbti,
+        hobby: hobby,
+        advan : advan,
+        blog: blog,
+        github: github,
+        inputDetail: Detail,
+        imglink : imglink
+      };
+      await addDoc(collection(db, "myCard"), doc)
+        .then((result) => {
+          console.log(result);
+          window.alert("저장성공!");
+          window.location.href = "./index.html";
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    });
+>>>>>>> 2ce32603dc915482950d6f7743e6a30864f0d3a6
 
       $("#preview").attr("src", e.target.result);
     }
