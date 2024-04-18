@@ -15,16 +15,37 @@
     crossorigin="anonymous"></script>
 </head>
 <style>
+  body {
+    /* width: 100%; */
+    font-family: "Pretendard";
+    max-width: 1920px;
+    margin: 0 auto;
+    font-size: 0 px;
+    background-color: #ffffff;
+  }
+
   .container {
     display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    width:90%;
+    gap: 24px;
+    border: 1px solid #ebeaec;
+    box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.3);
+    border-radius: 16px;
+    padding: 24px;
+    margin: 40px auto 40px;
   }
 
   .imgload {
     width: 50%;
+    float: left;
+    margin-right: 0px;
   }
 
   .inputdata {
     width: 50%;
+    float: right;
   }
 
   .bodyContain {
@@ -40,7 +61,18 @@
   .iimmgg {
     width: 500px;
     height: 500px;
+    border: 1px solid #ebeaec;
+    box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.3);
+  
   }
+  .two-box-container {
+    flex-direction: row;
+  }
+
+  #inputDetail {
+    height: 300px;
+  }
+  
 </style>
 <script type="module">
   // Firebase SDK 라이브러리 가져오기
@@ -128,49 +160,53 @@
 
 <body>
   <div class="container">
-    <div class="imgload">
-      <input type="file" id="image" accept="image/png, image/jpeg" />
-      <img class="iimmgg" id="preview">
+    <div class="two-box-container">
+      <div class="imgload">
+        <input type="file" id="image" accept="image/png, image/jpeg" />
+        <img class="iimmgg" id="preview">
+      </div>
+      <div class="inputdata">
+        <div class="form-floating">
+          <input type="text" class="form-control" id="inputName" placeholder="홍길동" />
+          <label for="floatingPassword">이름</label>
+        </div>
+        <div class="form-floating">
+          <input type="text" class="form-control" id="inputBirth" placeholder="1921년 1월 1일" />
+          <label for="floatingPassword">생년월일</label>
+        </div>
+        <div class="form-floating">
+          <input type="text" class="form-control" id="inputMbit" placeholder="CUTE" />
+          <label for="floatingPassword">MBIT</label>
+        </div>
+        <div class="form-floating">
+          <input type="text" class="form-control" id="inputHobby" placeholder="취미" />
+          <label for="floatingPassword">취미</label>
+        </div>
+        <div class="form-floating">
+          <input type="text" class="form-control" id="inputAdvan" placeholder="장점" />
+          <label for="floatingPassword">장점</label>
+        </div>
+        <div class="form-floating mb-3">
+          <input type="email" class="form-control" id="inputBlog" placeholder="name@example.com" />
+          <label for="floatingInput">블로그 주소</label>
+        </div>
+        <div class="form-floating mb-3">
+          <input type="email" class="form-control" id="inputGithub" placeholder="name@example.com" />
+          <label for="floatingInput">깃허브 주소</label>
+        </div>
+      </div>
     </div>
-    <div class="inputdata">
+
+
+    <div class="bodyContain">
       <div class="form-floating">
-        <input type="text" class="form-control" id="inputName" placeholder="홍길동" />
-        <label for="floatingPassword">이름</label>
+        <textarea class="form-control" placeholder="Leave a comment here" id="inputDetail"></textarea>
+        <label for="inputDetail">나의 협업 스타일 + 다짐</label>
       </div>
-      <div class="form-floating">
-        <input type="text" class="form-control" id="inputBirth" placeholder="1921년 1월 1일" />
-        <label for="floatingPassword">생년월일</label>
-      </div>
-      <div class="form-floating">
-        <input type="text" class="form-control" id="inputMbit" placeholder="CUTE" />
-        <label for="floatingPassword">MBIT</label>
-      </div>
-      <div class="form-floating">
-        <input type="text" class="form-control" id="inputHobby" placeholder="취미" />
-        <label for="floatingPassword">취미</label>
-      </div>
-      <div class="form-floating">
-        <input type="text" class="form-control" id="inputAdvan" placeholder="장점" />
-        <label for="floatingPassword">장점</label>
-      </div>
-      <div class="form-floating mb-3">
-        <input type="email" class="form-control" id="inputBlog" placeholder="name@example.com" />
-        <label for="floatingInput">블로그 주소</label>
-      </div>
-      <div class="form-floating mb-3">
-        <input type="email" class="form-control" id="inputGithub" placeholder="name@example.com" />
-        <label for="floatingInput">깃허브 주소</label>
-      </div>
-    </div>
-  </div>
-  <div class="bodyContain">
-    <div class="form-floating">
-      <textarea class="form-control" placeholder="Leave a comment here" id="inputDetail"
-        style="height: 100px"></textarea>
-      <label for="inputDetail">나의 협업 스타일 + 다짐</label>
     </div>
     <button type="button" id="save" class="btn btn-dark">등록</button>
   </div>
+
   <div id="show">
     <img id="myimg">
   </div>
