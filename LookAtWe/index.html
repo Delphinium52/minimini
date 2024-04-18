@@ -13,34 +13,64 @@
     />
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.2/firebase-app-compat.js"></script>
-      <script src="https://www.gstatic.com/firebasejs/10.7.2/firebase-firestore-compat.js"></script>
-      <script src="https://kit.fontawesome.com/b6958d5df9.js" crossorigin="anonymous"></script>
-      <title>우리좀봐조</title>
+    <script src="https://www.gstatic.com/firebasejs/10.7.2/firebase-firestore-compat.js"></script>
+    <script src="https://kit.fontawesome.com/b6958d5df9.js" crossorigin="anonymous"></script>
+
+    <title>우리좀봐조</title>
   </head>
 
-
   <script type="module">
-      import {
-          deleteCard,
-          getCollectionOrderBy,
-          getCollection,
-          updateSchedule,
-          addCollection,
-          img
-      } from "./js/firebase.js";
-      window.module = deleteCard;
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
+    import {
+      getFirestore,
+      collection,
+      addDoc,
+      getDocs,
+      doc,
+      deleteDoc,
+      updateDoc,
+    } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
+    import {
+      getStorage,
+      ref,
+      uploadBytes,
+      getDownloadURL,
+    } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-storage.js";
+    import { query, orderBy, where} from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
+
+    //크리에이트 = addDoc
+    //리드 = getDocs
+    //업데이트 = updateDoc
+    //딜리트 = deleteDoc
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyDE3HUsScoepDqKaJERAX430KqLoyV84Oc",
+      authDomain: "b14jo-130ae.firebaseapp.com",
+      projectId: "b14jo-130ae",
+      storageBucket: "b14jo-130ae.appspot.com",
+      messagingSenderId: "582152431286",
+      appId: "1:582152431286:web:8e05fb9b71bbaf5c7f2817",
+      measurementId: "G-C7866NV650",
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+    const storage = getStorage();
+    let users = await getDocs(collection(db, "User"));
+    let teamCard = await getDocs(collection(db, "myCard"));
 
 
-      //팀원 소개 목록
-      img();
+    //팀원 소개 목록
+    async function img(imgPath, uID) {
+        const imgRef = ref(storage, imgPath);
+        const url = await getDownloadURL(imgRef);
+        document.getElementById(uID).src = url;
+    }
 
     let uniqueId = 0; // 고유 id를 위한 카운터
-    // [{}, {}] : 배열, foreach 배열에서 요소를 하나씩 꺼내는 함수
-    let members = await getCollectionOrderBy('myCard', 'name', 'desc');
-    console.log('members', members)
+    let members = await getDocs(query(collection(db, "myCard"), orderBy("name", "desc")));
     //let members = await getDocs(collection(db, "myCard"));
     members.forEach((doc) => {
-        console.log('doc', doc);
         let row = doc.data();
 
         let imglink = row['imglink'];
@@ -48,7 +78,9 @@
         let inputDetail = row['inputDetail'];
         let temp_html = `
             <div class="card" style="width: 18rem;">
-                    <div class="delete-btn" id="deleteBtn${uniqueId}" onclick="module(this.id)"  data-id="${doc.id}"></div>
+                    <div class="delete-btn" id="tes2">
+                      <button id="delCard"><h5 class="card-name" data-name="${name}">${name}</h5></button>
+                    </div>
                     <div class="update-btn" data-id="test"><i class="fa-solid fa-pen"></i></div>
                     <img id="memberImg${uniqueId}">
                     <div class="card-body">
@@ -68,10 +100,29 @@
     let button = `<button id="posting-btn" class="custom-btn btn-1">+</button>`;
     $('#card1').append(button);
 
+    //삭제 시킬 문서ID 찾기
+    async function deleteDocument(cName, fName, v){
+      const q = await getDocs(query(collection(db, cName), where(fName, "==", v)));
+      const firstDoc = q.docs[0];
+      
+      await deleteDoc(doc(db, cName, firstDoc.id));
+      
+    }
+
+    // 딜리트버튼 클릭 메소드
+    $(".card").on("click", ".delete-btn", async function () {
+      let name = $(this).find(".card-name").data("name");
+      if(confirm("정말 삭제 하시겠습니까?")){
+        await deleteDocument("myCard", "name", name);
+        window.location.href = `index.html`
+      }
+    });
+
+
     // 카드 클릭시 수정 페이지로 이동
     $(".card-container").on("click", ".card-btn", function () {
-        let imgName = $(this).find(".card-name").data("name");
-        window.location.href = `editCard.html?${imgName}`;
+      let imgName = $(this).find(".card-name").data("name");
+      window.location.href = `editCard.html?${imgName}`;
     })
 
     // tmi 등록
@@ -83,11 +134,11 @@
         name: name,
         input: input,
       };
-      await addCollection('tmi');
+      await addDoc(collection(db, "tmi"), doc);
       window.location.reload();
     });
 
-    let docs = await getCollection('tmi');
+    let docs = await getDocs(collection(db, "tmi"));
     docs.forEach((doc) => {
       let row = doc.data();
 
@@ -116,11 +167,11 @@
       let doc = {
         input: input,
       };
-      await addCollection('rules');
+      await addDoc(collection(db, "rules"), doc);
       window.location.reload();
     });
 
-    docs = await getCollection('rules');
+    docs = await getDocs(collection(db, "rules"));
     docs.forEach((doc) => {
       let row = doc.data();
 
@@ -139,11 +190,11 @@
         input: input,
         tf: 0,
       };
-      await addCollection('schedule');
+      await addDoc(collection(db, "schedule"), doc1);
       window.location.reload();
     });
 
-    docs = await getCollection('schedule');
+    docs = await getDocs(collection(db, "schedule"));
     docs.forEach((doc) => {
       let row = doc.data();
 
@@ -176,7 +227,8 @@
                 'tf': 1
             };
         }
-        await updateSchedule(docId, inputUpdate);
+
+        await updateDoc(doc(db, "schedule", docId), inputUpdate);
         window.location.reload();
     })
     // 클릭시 카드 생성하기
@@ -188,7 +240,6 @@
     $(".update-btn").click(function () {
 
     });
-
 
 
 
@@ -232,9 +283,6 @@
     //   $("#postCard").append(temp_html);
      
     // });
-
-
-
   </script>
 
   <style>
