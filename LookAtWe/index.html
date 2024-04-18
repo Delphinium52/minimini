@@ -36,7 +36,7 @@
       uploadBytes,
       getDownloadURL,
     } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-storage.js";
-    import { query, orderBy } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
+    import { query, orderBy, where} from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
 
     //크리에이트 = addDoc
     //리드 = getDocs
@@ -78,9 +78,11 @@
         let inputDetail = row['inputDetail'];
         let temp_html = `
             <div class="card" style="width: 18rem;">
-                    <div class="delete-btn" data-id="tes2"></div>
+                    <div class="delete-btn" id="tes2">
+                      <button id="delCard"><h5 class="card-name" data-name="${name}">${name}</h5></button>
+                    </div>
                     <div class="update-btn" data-id="test"><i class="fa-solid fa-pen"></i></div>
-                    <img id="memberImg${uniqueId}" class = "card-img-top">
+                    <img id="memberImg${uniqueId}">
                     <div class="card-body">
                         <h5 class="card-title" data-title="${name}">${name}</h5>
                         <p class="card-text">${inputDetail}</p>
@@ -98,10 +100,29 @@
     let button = `<button id="posting-btn" class="custom-btn btn-1">+</button>`;
     $('#card1').append(button);
 
+    //삭제 시킬 문서ID 찾기
+    async function deleteDocument(cName, fName, v){
+      const q = await getDocs(query(collection(db, cName), where(fName, "==", v)));
+      const firstDoc = q.docs[0];
+      
+      await deleteDoc(doc(db, cName, firstDoc.id));
+      
+    }
+
+    // 딜리트버튼 클릭 메소드
+    $(".card").on("click", ".delete-btn", async function () {
+      let name = $(this).find(".card-name").data("name");
+      if(confirm("정말 삭제 하시겠습니까?")){
+        await deleteDocument("myCard", "name", name);
+        window.location.href = `index.html`
+      }
+    });
+
+
     // 카드 클릭시 수정 페이지로 이동
     $(".card-container").on("click", ".card-btn", function () {
-        let imgName = $(this).find(".card-name").data("name");
-        window.location.href = `editCard.html?${imgName}`;
+      let imgName = $(this).find(".card-name").data("name");
+      window.location.href = `editCard.html?${imgName}`;
     })
 
     // tmi 등록
@@ -217,11 +238,6 @@
 
     // 수정버튼 클릭 메소드
     $(".update-btn").click(function () {
-
-    });
-
-    // 딜리트버튼 클릭 메소드
-    $(".delete-btn").click(function () {
 
     });
 
@@ -439,7 +455,7 @@
       font-family: "Pretendard";
       text-align: center;
 
-        margin: 400px auto 600px;
+        margin: 200px auto 300px auto;
     }
 
     .team-profile-head {
@@ -484,31 +500,20 @@
     }
 
     .card {
-        margin: 5px 0 5px 0;
-        
+      margin: 5px 0 5px 0;
     }
-    .card-img-top {
-        height: 100%;
-        width: 100%;
-        object-fit: cover;
-    }
-    .card-text {
-        height: 95px;
-        width: 200px;
-        max-height: 200px;
-        max-width: 200px;
-        overflow: hidden;
-    }
+
     .card-btn {
-        text-align: center;
-        margin: 5px;
+      text-align: center;
+      margin: 200px auto 0px auto;
     }
 
     .card-title {
-        text-align: center;
-        font-size: 25px;
-        font-family: "BMJUA";
+      text-align: center;
+      font-size: 25px;
+      font-family: "BMJUA";
     }
+
     /*Tmi카드 생성 버튼*/
     .custom-btn {
       outline: none;
@@ -546,11 +551,8 @@
         text-align: center;
         padding: 7px;
         caret-color: transparent;
-        z-index: 7;
 
     }
-
-
 
     .card:hover .delete-btn,
     .card:hover .update-btn {
@@ -616,7 +618,7 @@
         <nav>
             <ul class="nav-list">
 
-                <li class="list-main"><img src="img/Team_Icon.png" alt="팀 아이콘" class="team-icon"><span class="nav-team-logo">우리 좀 봐조</span></li>
+                <li class="list-main"><a href="#top"><img src="img/Team_Icon.png" alt="팀 아이콘" class="team-icon"></a><span class="nav-team-logo">우리 좀 봐조</span></li>
                 <li><a href="#team" class="list-link">팀 소개</a></li>
                 <li><a href="#tmi" class="list-link">TMI</a></li>
                 <li><a href="#member" class="list-link">팀원들</a></li>
@@ -628,7 +630,7 @@
         </div>
     </header>
 
-    <div class="header">
+    <div class="header" id="top">
       <img src="./img/00_header.png" id="header-img" />
     </div>
 
@@ -636,10 +638,10 @@
         <div class="anchor" id="team"></div>
         <h1 class="team-profile-head">우리 좀 봐조</h1>
         <div class="team-profile-body">
-            우리 좀 봐조 팀원들은 언제나 새로운 시도를 하고 있습니다. <br>튜터,매니저님의 관심을 목표로 개발을 하고 있습니다. <br>
-            <br>또한 협업과 커뮤니케이션 역시 중요하게 생각하며, 팀원들과의 원활한 소통을 통해 함께 성장하고 싶습니다. <br>
-            백엔드 개발 분야에서 더 나은 미래를 향해 달려가는 팀으로서, 새로운 기회와 도전을 기다리고 있습니다.
-            
+          <br>
+            <h3 style="line-height: 50px;">우리 좀 봐조 팀원들은 언제나 새로운 시도를 하며 <br>튜터,매니저님의 관심을 목표로 개발을 하고 있습니다. <br>
+            <br>또한 협업과 커뮤니케이션을 중요하게 생각하며, 팀원들과의 원활한 소통을 통해 함께 성장하고 싶습니다. <br>
+            백엔드 개발 분야에서 더 나은 미래를 향해 달려가는 팀으로서, 새로운 기회와 도전을 기다리고 있습니다.</h3>
         </div>
     </div>
 
@@ -699,75 +701,42 @@
     </div>
 
     
-    <div class="rule-area">
-        <div class="anchor" id="ruleschedule"></div>
-        <div class="rsinput" style="float: left;">
-            <div class="card">
-                <div class="card-header py-3">
-                    <h2>팀 약속</h2>
-                </div>
-                <div>
-                    <div id="rlist" style="height: 400px; overflow-y: auto;">
-                        <ul class="list-group list-group-flush">
-                        </ul>
-                    </div>
+    <div class="rule-area" id="ruleschedule">
+      <div class="rsinput" style="float: left;">
+        <div class="card">
+            <div class="card-header py-3">
+                <h2>팀 약속</h2>
+            </div>
+            <div>
+                <div style="height: 400px; overflow-y: auto;">
+                    <ul class="list-group" id="rlist">
+                    </ul>
                 </div>
             </div>
-            <div class="input-group mb-3">
-                <input type="text" class="form-control" id="rinput" placeholder="약속을 입력해주세요."
-                    aria-label="Recipient's username" aria-describedby="button-addon2">
-                <button class="btn btn-outline-secondary" id="rbtn" type="button" id="button-addon2">추가</button>
-            </div>
-          </div>
         </div>
         <div class="input-group mb-3">
-          <input
-            type="text"
-            class="form-control"
-            id="rinput"
-            placeholder="약속을 입력해주세요."
-            aria-label="Recipient's username"
-            aria-describedby="button-addon2"
-          />
-          <button
-            class="btn btn-outline-secondary"
-            id="rbtn"
-            type="button"
-            id="button-addon2"
-          >
-            추가
-          </button>
+            <input type="text" class="form-control" id="rinput" placeholder="약속을 입력해주세요"
+                aria-label="Recipient's username" aria-describedby="button-addon2">
+            <button class="btn btn-outline-secondary" id="rbtn" type="button" id="button-addon2">추가</button>
         </div>
       </div>
 
-      <div class="rsinput" style="float: right">
+      <div class="rsinput" style="float: right;">
         <div class="card">
-          <div class="card-header py-3">
-            <h2>프로젝트 일정</h2>
-          </div>
-          <div>
-            <div id="slist" style="height: 400px; overflow-y: auto">
-              <ul class="list-group list-group-flush"></ul>
+            <div class="card-header py-3">
+                <h2>프로젝트 일정</h2>
             </div>
-          </div>
+            <div>
+                <div style="height: 400px; overflow-y: auto;">
+                    <ul class="list-group" id="slist">
+                    </ul>
+                </div>
+            </div>
         </div>
         <div class="input-group mb-3">
-          <input
-            type="text"
-            class="form-control"
-            id="sinput"
-            placeholder="완료된 일정은 더블클릭해 주세요."
-            aria-label="Recipient's username"
-            aria-describedby="button-addon2"
-          />
-          <button
-            class="btn btn-outline-secondary"
-            id="sbtn"
-            type="button"
-            id="button-addon2"
-          >
-            추가
-          </button>
+            <input type="text" class="form-control" id="sinput" placeholder="일정을 추가해주세요"
+                aria-label="Recipient's username" aria-describedby="button-addon2">
+            <button class="btn btn-outline-secondary" id="sbtn" type="button" id="button-addon2">추가</button>
         </div>
       </div>
     </div>
