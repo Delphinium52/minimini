@@ -84,14 +84,34 @@
 </style>
 <script type="module">
     // Firebase SDK 라이브러리 가져오기
+    // import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
+    // import { getFirestore } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
+    // import {
+    //     collection,
+    //     addDoc,
+    //     updateDoc,
+    //     doc
+    // } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
+    // import { getDocs, query, where } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
+    // import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-storage.js";
+
     import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
-    import { getFirestore } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
     import {
+        getFirestore,
         collection,
         addDoc,
+        getDocs,
+        doc,
+        deleteDoc,
+        updateDoc,
     } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
-    import { getDocs, query, where } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
-    import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-storage.js";
+    import {
+        getStorage,
+        ref,
+        uploadBytes,
+        getDownloadURL,
+    } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-storage.js";
+    import { query, orderBy, where } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
 
     // Firebase 구성 정보 설정
     const firebaseConfig = {
@@ -110,40 +130,6 @@
     const db = getFirestore(app);
     const storage = getStorage(app);
 
-    //db 저장
-    // $("#save").click(async function () {
-    //     var file = document.querySelector("#image").files[0];
-    //     let name = $("#inputName").val();
-    //     let birth = $("#inputBirth").val();
-    //     let mbti = $("#inputMbit").val();
-    //     let hobby = $("#inputHobby").val();
-    //     let blog = $("#inputBlog").val();
-    //     let github = $("#inputGithub").val();
-    //     let Detail = $("#inputDetail").val();
-    //     var storageRef = ref(storage, name);
-    //     let img = 'gs://b14jo-130ae.appspot.com/';
-    //     let imglink = img + name;
-    //     uploadBytes(storageRef, file);
-    //     let doc = {
-    //         name: name,
-    //         birth: birth,
-    //         mbit: mbti,
-    //         hobby: hobby,
-    //         blog: blog,
-    //         github: github,
-    //         inputDetail: Detail,
-    //         imglink: imglink
-    //     };
-    //     await addDoc(collection(db, "myCard"), doc)
-    //         .then((result) => {
-    //             console.log(result);
-    //             window.alert("저장성공!");
-    //             window.location.href = "./main.html";
-    //         })
-    //         .catch((err) => {
-    //             console.log(err);
-    //         });
-    // });
 
     let name = location.href.split('?')[1];
     name = decodeURI(name);
@@ -164,15 +150,60 @@
 
     }
 
+    let imgRef = "";
     async function img(imgPath) {
-        const imgRef = ref(storage, imgPath);
+        imgRef = ref(storage, imgPath);
         const url = await getDownloadURL(imgRef);
         document.getElementById('preview').src = url;
     }
     img(imgPath);
     edit(name);
 
+    //수정 데이터 id
+    async function fID(cName, fName, v) {
+        const q = await getDocs(query(collection(db, cName), where(fName, "==", v)));
+        const firstDoc = q.docs[0];
+        return firstDoc.id;
+    }
 
+    //db 수정
+    $("#save").click(async function () {
+        var file = document.querySelector("#image").files[0];
+        let name1 = $("#inputName").val();
+        let birth = $("#inputBirth").val();
+        let mbti = $("#inputMbit").val();
+        let hobby = $("#inputHobby").val();
+        let blog = $("#inputBlog").val();
+        let github = $("#inputGithub").val();
+        let Detail = $("#inputDetail").val();
+        var storageRef = ref(storage, name1);
+        let img = 'gs://b14jo-130ae.appspot.com/';
+        let imglink = img + name1;
+        uploadBytes(storageRef, file);
+        let updatedDoc = {
+            name: name1,
+            birth: birth,
+            mbit: mbti,
+            hobby: hobby,
+            blog: blog,
+            github: github,
+            inputDetail: Detail,
+            imglink: imglink
+        };
+
+        let docId = await fID("myCard", "name", name); //docId 값을 찾는 함수 호출
+        //await updateDoc(doc(db, "schedule", docId), inputUpdate);
+        await updateDoc(doc(db, "myCard", docId), updatedDoc);
+        window.alert("수정 성공!");
+        window.location.href = "index.html";
+        // .then((result) => {
+        //     window.alert("수정 성공!");
+        //     window.location.href = "./main.html";
+        // })
+        // .catch((err) => {
+        //     console.log(err);
+        // });
+    });
 
 </script>
 
@@ -180,7 +211,7 @@
     <div class="container">
         <div class="two-box-container">
             <div class="imgload">
-                <!-- <input type="file" id="image" accept="image/png, image/jpeg" /> -->
+                <input type="file" id="image" accept="image/png, image/jpeg" />
                 <img class="iimmgg" id="preview">
             </div>
             <div class="inputdata">
@@ -205,7 +236,7 @@
                     <label for="floatingPassword">장점</label>
                 </div>
                 <div class="form-floating mb-3">
-                    <input type="email" class="form-control" id="inputBlog" y>
+                    <input type="email" class="form-control" id="inputBlog">
                     <label for="floatingInput">블로그 주소</label>
                 </div>
                 <div class="form-floating mb-3">
@@ -222,7 +253,7 @@
                 <label for="inputDetail">나의 협업 스타일 + 다짐</label>
             </div>
         </div>
-        <button type="button" id="save" class="btn btn-dark">등록</button>
+        <button type="button" id="save" class="btn btn-dark">수정</button>
     </div>
 
     <div id="show">
