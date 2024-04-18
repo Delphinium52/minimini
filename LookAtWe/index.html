@@ -75,7 +75,7 @@
             <div class="card" style="width: 18rem;">
                     <div class="delete-btn" data-id="tes2"></div>
                     <div class="update-btn" data-id="test"><i class="fa-solid fa-pen"></i></div>
-                    <img id="memberImg${uniqueId}">
+                    <img id="memberImg${uniqueId}" class="card-img-top">
                     <div class="card-body">
                         <h5 class="card-title" data-title="${name}">${name}</h5>
                         <p class="card-text">${inputDetail}</p>
@@ -202,15 +202,10 @@
         window.location.href = "./newcard.html";
     })
 
-<<<<<<< HEAD
-    $(document).on("click", "#posting-btn" , function() {
-        window.location.href = "./newcard.html";
-=======
     // 카드 클릭시 수정 페이지로 이동
     $(".card-container").on("click", ".card", function () {
         let imgName = $(this).find(".card-title").data("title");
         window.location.href = `editCard.html?${imgName}`;
->>>>>>> e16855c61fa00586212a6d09d314a408bd61aaa9
     })
 
     // 수정버튼 클릭 메소드
@@ -482,10 +477,21 @@
         margin: 40px auto 40px;
     }
 
+
     .card {
         margin: 5px 0 5px 0;
     }
-
+    .card-img-top {
+        height: 100%;
+        width: 100%;
+    }
+    .card-text {
+        height: 95px;
+        width: 200px;
+        max-height: 200px;
+        max-width: 200px;
+        overflow: hidden;
+    }
     .card-btn {
         text-align: center;
         margin: 5px;
