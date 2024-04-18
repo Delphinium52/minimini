@@ -81,7 +81,9 @@
                     <div class="delete-btn" id="tes2">
                       <button id="delCard"><h5 class="card-name" data-name="${name}">${name}</h5></button>
                     </div>
-                    <div class="update-btn" data-id="test"><i class="fa-solid fa-pen"></i></div>
+                    <div class="update-btn" data-id="test"><i class="fa-solid fa-pen"></i>
+                      <button id="delCard"><h5 class="card-name" data-name="${name}">${name}</h5></button>
+                    </div>
                     <img id="memberImg${uniqueId}" class="card-img-top">
                     <div class="card-body">
                         <h5 class="card-title" data-title="${name}">${name}</h5>
@@ -118,8 +120,13 @@
       }
     });
 
+    // 수정 버튼 클릭시  수정 페이지로 이동
+      $(".card").on("click", ".update-btn", function () {
+        let imgName = $(this).find(".card-name").data("name");
+        window.location.href = `editCard.html?${imgName}`;
+      })
 
-    // 카드 클릭시 수정 페이지로 이동
+    // 카드 클릭시  상세 정보 페이지로 이동
     $(".card-container").on("click", ".card-btn", function () {
       let imgName = $(this).find(".card-name").data("name");
       window.location.href = `info.html?${imgName}`;
