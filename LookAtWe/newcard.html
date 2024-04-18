@@ -36,6 +36,11 @@
   .inputdata div {
     margin-bottom: 5px;
   }
+
+  .iimmgg {
+    width: 500px;
+    height: 500px;
+  }
 </style>
 <script type="module">
   // Firebase SDK 라이브러리 가져오기
@@ -125,7 +130,7 @@
   <div class="container">
     <div class="imgload">
       <input type="file" id="image" accept="image/png, image/jpeg" />
-      <img id="preview">
+      <img class="iimmgg" id="preview">
     </div>
     <div class="inputdata">
       <div class="form-floating">
@@ -175,7 +180,7 @@
 
   // var file = event.target.files[0];
 
-  // var reader = new FileReader(); 
+  // var reader = new FileReader();
   // reader.onload = function(e) {
 
   //     $("#preview").attr("src", e.target.result);
