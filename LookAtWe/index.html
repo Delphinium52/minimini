@@ -36,7 +36,7 @@
       uploadBytes,
       getDownloadURL,
     } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-storage.js";
-    import { query, orderBy } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
+    import { query, orderBy, where} from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
 
     //크리에이트 = addDoc
     //리드 = getDocs
@@ -78,9 +78,11 @@
         let inputDetail = row['inputDetail'];
         let temp_html = `
             <div class="card" style="width: 18rem;">
-                    <div class="delete-btn" data-id="tes2"></div>
+                    <div class="delete-btn" id="tes2">
+                      <button id="delCard"><h5 class="card-name" data-name="${name}">${name}</h5></button>
+                    </div>
                     <div class="update-btn" data-id="test"><i class="fa-solid fa-pen"></i></div>
-                    <img id="memberImg${uniqueId}" class = "card-img-top">
+                    <img id="memberImg${uniqueId}">
                     <div class="card-body">
                         <h5 class="card-title" data-title="${name}">${name}</h5>
                         <p class="card-text">${inputDetail}</p>
@@ -98,10 +100,29 @@
     let button = `<button id="posting-btn" class="custom-btn btn-1">+</button>`;
     $('#card1').append(button);
 
+    //삭제 시킬 문서ID 찾기
+    async function deleteDocument(cName, fName, v){
+      const q = await getDocs(query(collection(db, cName), where(fName, "==", v)));
+      const firstDoc = q.docs[0];
+      
+      await deleteDoc(doc(db, cName, firstDoc.id));
+      
+    }
+
+    // 딜리트버튼 클릭 메소드
+    $(".card").on("click", ".delete-btn", async function () {
+      let name = $(this).find(".card-name").data("name");
+      if(confirm("정말 삭제 하시겠습니까?")){
+        await deleteDocument("myCard", "name", name);
+        window.location.href = `index.html`
+      }
+    });
+
+
     // 카드 클릭시 수정 페이지로 이동
     $(".card-container").on("click", ".card-btn", function () {
-        let imgName = $(this).find(".card-name").data("name");
-        window.location.href = `editCard.html?${imgName}`;
+      let imgName = $(this).find(".card-name").data("name");
+      window.location.href = `editCard.html?${imgName}`;
     })
 
     // tmi 등록
@@ -217,11 +238,6 @@
 
     // 수정버튼 클릭 메소드
     $(".update-btn").click(function () {
-
-    });
-
-    // 딜리트버튼 클릭 메소드
-    $(".delete-btn").click(function () {
 
     });
 
@@ -484,31 +500,20 @@
     }
 
     .card {
-        margin: 5px 0 5px 0;
-        
+      margin: 5px 0 5px 0;
     }
-    .card-img-top {
-        height: 100%;
-        width: 100%;
-        object-fit: cover;
-    }
-    .card-text {
-        height: 95px;
-        width: 200px;
-        max-height: 200px;
-        max-width: 200px;
-        overflow: hidden;
-    }
+
     .card-btn {
-        text-align: center;
-        margin: 5px;
+      text-align: center;
+      margin: 200px auto 0px auto;
     }
 
     .card-title {
-        text-align: center;
-        font-size: 25px;
-        font-family: "BMJUA";
+      text-align: center;
+      font-size: 25px;
+      font-family: "BMJUA";
     }
+
     /*Tmi카드 생성 버튼*/
     .custom-btn {
       outline: none;
@@ -546,11 +551,8 @@
         text-align: center;
         padding: 7px;
         caret-color: transparent;
-        z-index: 7;
 
     }
-
-
 
     .card:hover .delete-btn,
     .card:hover .update-btn {
