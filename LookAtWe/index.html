@@ -82,7 +82,7 @@
                       <button id="delCard"><h5 class="card-name" data-name="${name}">${name}</h5></button>
                     </div>
                     <div class="update-btn" data-id="test"><i class="fa-solid fa-pen"></i></div>
-                    <img id="memberImg${uniqueId}">
+                    <img id="memberImg${uniqueId}" class="card-img-top">
                     <div class="card-body">
                         <h5 class="card-title" data-title="${name}">${name}</h5>
                         <p class="card-text">${inputDetail}</p>
@@ -500,20 +500,29 @@
     }
 
     .card {
-      margin: 5px 0 5px 0;
+        margin: 5px 0 5px 0;
     }
-
+    .card-img-top {
+        height: 100%;
+        width: 100%;
+    }
+    .card-text {
+        height: 95px;
+        width: 200px;
+        max-height: 200px;
+        max-width: 200px;
+        overflow: hidden;
+    }
     .card-btn {
-      text-align: center;
-      margin: 200px auto 0px auto;
-    }
+        text-align: center;
+        margin: 5px;
+    }	
 
     .card-title {
-      text-align: center;
-      font-size: 25px;
-      font-family: "BMJUA";
+        text-align: center;
+        font-size: 25px;
+        font-family: "BMJUA";
     }
-
     /*Tmi카드 생성 버튼*/
     .custom-btn {
       outline: none;
