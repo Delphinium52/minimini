@@ -223,12 +223,10 @@
       });
 
       let linput = row["input"];
-      let tf = row["tf"];
 
-        let inputUpdate = {
-              'input': input + " ✅",
-              'tf': 1
-          }
+      let inputUpdate = {
+        'input': input + " ✅"
+      }
 
         await updateDoc(doc(db, "schedule", docId), inputUpdate);
         window.location.reload();
