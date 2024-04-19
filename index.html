@@ -216,21 +216,24 @@
     $(document).on("dblclick", ".list-group-item", async function () {
       let docId = $(this).attr("id");
 
+      let input = this.innerText;
+
       let row;
 
       docs.forEach((doc) => {
         row = doc.data();
       });
 
-      let input = this.innerText;
+      let linput = row["input"];
+      let tf = row["tf"];
 
-      let inputUpdate = {
-        'input': input + " ✅"
-      }
+        let inputUpdate = {
+                'input': input + " ✅"
+            }
 
         await updateDoc(doc(db, "schedule", docId), inputUpdate);
         window.location.reload();
-    })
+    });
     // 클릭시 카드 생성하기
     $('#posting-btn').click(function () {
         window.location.href = "./newcard.html";
