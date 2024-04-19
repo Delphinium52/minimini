@@ -216,8 +216,6 @@
     $(document).on("dblclick", ".list-group-item", async function () {
       let docId = $(this).attr("id");
 
-      let input = this.innerText;
-
       let row;
 
       docs.forEach((doc) => {
@@ -227,13 +225,10 @@
       let linput = row["input"];
       let tf = row["tf"];
 
-        let inputUpdate;
-        if (tf == 0) {
-            inputUpdate = {
-                'input': input + " ✅",
-                'tf': 1
-            };
-        }
+        let inputUpdate = {
+              'input': input + " ✅",
+              'tf': 1
+          }
 
         await updateDoc(doc(db, "schedule", docId), inputUpdate);
         window.location.reload();
